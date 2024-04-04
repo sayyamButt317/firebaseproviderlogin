@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../Model/user_model.dart';
 import '../profile/view/profile.dart';
-import '../Home/view/home.dart'; // Assuming you have a HomeScreen widget
+import '../Home/view/home.dart';
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -59,7 +59,7 @@ class AuthService extends ChangeNotifier {
   Future<void> signup() async {
     await _auth
         .createUserWithEmailAndPassword(
-        email: _email.text.toString(), password: _password.text.toString())
+            email: _email.text.toString(), password: _password.text.toString())
         .then((value) {
       // Handle successful sign-up
     }).catchError((error) {
