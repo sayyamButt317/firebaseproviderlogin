@@ -72,8 +72,7 @@ class Login extends StatelessWidget {
                     text: ("Login"),
                     width: MediaQuery.sizeOf(context).width * 0.89,
                     onPressed: () async {
-                      authservice.signInWithEmailAndPassword(
-                          emailController.text, passwordController.text);
+                      authservice.login(context);
 
                         Navigator.pushReplacement(
                           context,

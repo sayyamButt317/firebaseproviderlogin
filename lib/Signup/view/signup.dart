@@ -78,10 +78,7 @@ class Signup extends StatelessWidget {
                     text: ("Sign Up"),
                     width: MediaQuery.sizeOf(context).width * 0.89,
                     onPressed: () async {
-                      authservice.createUserWithEmailAndPassword(
-                        nameController.text.toString().trim(),
-                        emailController.text.toString().trim(),
-                      );
+                      authservice.signup();
                       Navigator.pop(context);
                     },
                   ),
@@ -91,7 +88,6 @@ class Signup extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-
                   const Text("Already have an Account ?"),
                   InkWell(
                     onTap: () {
@@ -102,7 +98,8 @@ class Signup extends StatelessWidget {
                     },
                     child: const Text(
                       " Login",
-                      style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                          color: Colors.blue, fontWeight: FontWeight.w600),
                     ),
                   ),
                 ],

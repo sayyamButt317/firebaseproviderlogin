@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:login/Services/auth.dart';
 import 'package:login/Services/check_login.dart';
+import 'package:login/Splash/Controller/splash_controller.dart';
 import 'package:login/profile/view/profile.dart';
 import 'package:provider/provider.dart';
 import 'Login/view/login_view.dart';
@@ -17,6 +18,7 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
+        ChangeNotifierProvider(create: (_) => SplashProvider())
       ],
       child: const MyApp(),
     ),
