@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:login/Services/auth.dart';
 import 'package:login/Services/check_login.dart';
 import 'package:login/Splash/Controller/splash_controller.dart';
+import 'package:login/profile/Controller/profile_provider.dart';
 import 'package:login/profile/view/profile.dart';
 import 'package:provider/provider.dart';
+import 'Home/Controller/home_provider.dart';
 import 'Login/view/login_view.dart';
 import 'Signup/view/signup.dart';
 import 'firebase_options.dart';
@@ -18,7 +20,9 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
-        ChangeNotifierProvider(create: (_) => SplashProvider())
+        ChangeNotifierProvider(create: (_) => ProfileProvider()),
+        ChangeNotifierProvider(create: (_) => SplashProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
       ],
       child: const MyApp(),
     ),
@@ -41,7 +45,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const LoginStatus(),
         '/login': (context) => Login(),
         '/signup': (context) => Signup(),
-        '/Profile':(context) => Profile(),
+        '/Profile': (context) => Profile(),
       },
     );
   }

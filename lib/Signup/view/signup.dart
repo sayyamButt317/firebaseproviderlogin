@@ -77,9 +77,13 @@ class Signup extends StatelessWidget {
                   AppButton(
                     text: ("Sign Up"),
                     width: MediaQuery.sizeOf(context).width * 0.89,
-                    onPressed: () async {
-                      authservice.signup();
-                      Navigator.pop(context);
+                    onPressed: ()async {
+                      if (_formKey.currentState!.validate()) {
+                        String email = emailController.text.trim();
+                        String password = passwordController.text.trim();
+                        await authservice.signup(email, password);
+                        Navigator.pop(context);
+                      }
                     },
                   ),
                 ],

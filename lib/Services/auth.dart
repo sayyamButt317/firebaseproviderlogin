@@ -11,6 +11,13 @@ class AuthService extends ChangeNotifier {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
 
+  // Dispose text editing controllers to prevent memory leaks
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
   UserModel? _userFromFirebase(User? user) {
     if (user == null) {
       return null;
@@ -22,22 +29,15 @@ class AuthService extends ChangeNotifier {
     return _auth.authStateChanges().map((user) => _userFromFirebase(user));
   }
 
-  Future<void> login(BuildContext context) async {
-    bool hasEnteredProfiledata = false;
+  Future<void> login(BuildContext context, String email, String password) async {
     try {
-      final String email = _email.text.trim();
-      final String password = _password.text.trim();
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-
       final User? user = _auth.currentUser;
       if (user != null) {
-        if (!hasEnteredProfiledata) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => Profile()),
-          );
-          hasEnteredProfiledata = true;
-        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Profile()),
+        );
       } else {
         Navigator.pushReplacement(
           context,
@@ -51,20 +51,21 @@ class AuthService extends ChangeNotifier {
       } else if (error.code == 'wrong-password') {
         errorMessage = 'Invalid password';
       }
-
-      debugPrint(error.toString());
+      debugPrint(errorMessage);
     }
   }
 
-  Future<void> signup() async {
-    await _auth
-        .createUserWithEmailAndPassword(
-            email: _email.text.toString(), password: _password.text.toString())
-        .then((value) {
+  Future<void> signup(String email, String password) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
       // Handle successful sign-up
-    }).catchError((error) {
+    } catch (error) {
       // Handle sign-up errors
-    });
+      debugPrint(error.toString());
+    }
   }
 
   Future<void> signOut() async {

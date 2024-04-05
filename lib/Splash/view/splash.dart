@@ -23,7 +23,7 @@ class _MyWidgetState extends State<SplashScreen> {
     Timer(
       const Duration(seconds: 3),
       () {
-        providercontroller.checkLogin();
+        providercontroller.checkLogin(context);
       },
     );
   }
