@@ -84,7 +84,7 @@ class _ProfileState extends State<Profile> {
                     alignment: Alignment.bottomCenter,
                     child: GestureDetector(
                       onTap: () {
-                        getImage(ImageSource.camera);
+                        providerController.getImage(ImageSource.camera);
                       },
                       child: selectedImage == null
                           ? (myuser.value.image != null &&
