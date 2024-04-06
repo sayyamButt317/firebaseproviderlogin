@@ -1,8 +1,28 @@
-class InfoModel{
+class InfoModel {
   final String uid;
-  late final String? firstname;
-  late final String? lastname;
-  late final String? email;
+  final String? firstname;
+  final String? lastname;
+  final String? email;
+  final String? image;
+  final String? address;
 
-  InfoModel(this.firstname,this.lastname,this.email, this.uid);
+  InfoModel({
+    required this.uid,
+    this.firstname,
+    this.lastname,
+    this.email,
+    this.image,
+    this.address,
+  });
+
+  factory InfoModel.fromJson(Map<String, dynamic> json) {
+    return InfoModel(
+      uid: json['uid'] ?? '',
+      firstname: json['firstname'],
+      lastname: json['lastname'],
+      email: json['email'],
+      address: json['address'],
+      image: json['image'],
+    );
+  }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../Widget/btn.dart';
 import '../../../Widget/textfeild.dart';
+import '../../Services/auth.dart';
 import '../../Splash/Controller/splash_controller.dart';
+import '../../profile/Controller/profile_provider.dart';
 import '../Controller/home_provider.dart';
 
 class MyHomePage extends StatelessWidget {
@@ -13,11 +14,40 @@ class MyHomePage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final providerController =
-        Provider.of<HomeProvider>(context, listen: false);
+    final providerController = Provider.of<ProfileProvider>(context, listen: false);
+    final auth = Provider.of<AuthService>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
+        leading: IconButton(
+          onPressed: () async {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Confirmation'),
+                  content: const Text('Do you want to logout?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text('No'),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        auth.signOut();
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Logout'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          icon: const Icon(Icons.lock),
+        ),
         title: const Text(
           'Home',
         ),
@@ -36,30 +66,18 @@ class MyHomePage extends StatelessWidget {
                 child: Column(
                   children: [
                     CustomTextFormField(
-                      controller: providerController.name,
+                      controller: providerController.firstname,
                       prefixIcon: Icons.person,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Enter Your Name!";
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.name,
+                      readOnly: true,
                       hintText: '',
                     ),
                     const SizedBox(
                       height: 15,
                     ),
                     CustomTextFormField(
-                      controller: providerController.name,
+                      controller: providerController.lastname,
                       prefixIcon: Icons.person,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Enter Your Name!";
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.name,
+                      readOnly: true,
                       hintText: '',
                     ),
                     const SizedBox(
@@ -67,29 +85,8 @@ class MyHomePage extends StatelessWidget {
                     ),
                     CustomTextFormField(
                       controller: providerController.email,
-                      prefixIcon: Icons.alternate_email,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Enter Your Email!";
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.emailAddress,
                       hintText: '',
-                    ),
-                    const SizedBox(height: 15),
-                    CustomTextFormField(
-                      controller: providerController.password,
-                      prefixIcon: Icons.lock,
-                      obscureText: true,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Enter Your Email!";
-                        }
-                        return null;
-                      },
-                      keyboardType: TextInputType.text,
-                      hintText: '',
+                      readOnly: true,
                     ),
                     const SizedBox(height: 15),
                   ],

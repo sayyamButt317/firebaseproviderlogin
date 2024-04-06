@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:login/Services/auth.dart';
+import 'package:login/Signup/Controller/signup_provider.dart';
 import 'package:provider/provider.dart';
 import '../../../Widget/btn.dart';
 import '../../../Widget/textfeild.dart';
@@ -8,13 +9,11 @@ import '../../Login/view/login_view.dart';
 class Signup extends StatelessWidget {
   Signup({super.key});
 
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    final authservice = Provider.of<AuthService>(context);
+    final providerController = Provider.of<SignupProvider>(context);
+    final authService = Provider.of<AuthService>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -36,7 +35,7 @@ class Signup extends StatelessWidget {
                 child: Column(
                   children: [
                     CustomTextFormField(
-                      controller: emailController,
+                      controller: providerController.emailController,
                       prefixIcon: Icons.alternate_email,
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -49,7 +48,7 @@ class Signup extends StatelessWidget {
                     ),
                     const SizedBox(height: 15),
                     CustomTextFormField(
-                      controller: passwordController,
+                      controller: providerController.passwordController,
                       prefixIcon: Icons.lock,
                       obscureText: true,
                       validator: (String? password) {
@@ -77,12 +76,13 @@ class Signup extends StatelessWidget {
                   AppButton(
                     text: ("Sign Up"),
                     width: MediaQuery.sizeOf(context).width * 0.89,
-                    onPressed: ()async {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        String email = emailController.text.trim();
-                        String password = passwordController.text.trim();
-                        await authservice.signup(email, password);
-                        Navigator.pop(context);
+                        String email =
+                            providerController.emailController.text.trim();
+                        String password =
+                            providerController.passwordController.text.trim();
+                        await authService.signup(context, email, password);
                       }
                     },
                   ),

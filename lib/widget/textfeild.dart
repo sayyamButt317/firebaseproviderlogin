@@ -8,7 +8,7 @@ class CustomTextFormField extends StatelessWidget {
     this.keyboardType,
     this.cursorColor = Colors.black,
     this.labelText,
-    required this.hintText,
+    this.hintText,
     this.labelStyle,
     this.prefixIcon,
     this.enabledBorder,
@@ -33,7 +33,7 @@ class CustomTextFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final Color? cursorColor;
   final String? labelText;
-  final String hintText;
+  final String? hintText;
   final TextStyle? labelStyle;
   final IconData? prefixIcon;
   final IconData? suffixIcon;

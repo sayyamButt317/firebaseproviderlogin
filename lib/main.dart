@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:login/Services/auth.dart';
 import 'package:login/Services/check_login.dart';
+import 'package:login/Signup/Controller/signup_provider.dart';
 import 'package:login/Splash/Controller/splash_controller.dart';
 import 'package:login/profile/Controller/profile_provider.dart';
 import 'package:login/profile/view/profile.dart';
@@ -22,7 +23,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => AuthService()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => SplashProvider()),
-        ChangeNotifierProvider(create: (_) => HomeProvider()),
+        ChangeNotifierProvider(create: (_) => SignupProvider()),
       ],
       child: const MyApp(),
     ),

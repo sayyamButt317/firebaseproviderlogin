@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login/Home/view/home.dart';
 import 'package:login/Services/auth.dart';
 import 'package:provider/provider.dart';
 import '../../../Widget/btn.dart';
@@ -6,7 +7,7 @@ import '../../../Widget/textfeild.dart';
 import '../Controller/profile_provider.dart';
 
 class Profile extends StatefulWidget {
-  Profile({Key? key}) : super(key: key);
+  const Profile({Key? key}) : super(key: key);
 
   @override
   State<Profile> createState() => _ProfileState();
@@ -19,7 +20,7 @@ class _ProfileState extends State<Profile> {
   void initState() {
     super.initState();
     providerController = Provider.of<ProfileProvider>(context, listen: false);
-    // providerController.loadData();
+    providerController.loadData();
   }
 
   @override
@@ -67,12 +68,96 @@ class _ProfileState extends State<Profile> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(
+                width: 300,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                    const Center(),
+                SizedBox(
+                  height: Get.height * 0.2,
+                  child: Obx(() {
+                    return Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: GestureDetector(
+                            onTap: () {
+                              getImage(ImageSource.camera);
+                            },
+                            child: selectedImage == null
+                                ? (myuser.value.image != null &&
+                                myuser.value.image!.isNotEmpty)
+                                ? Container(
+                              width: 120,
+                              height: 120,
+                              margin:
+                              const EdgeInsets.only(bottom: 20),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.grey,
+                                  width: 5,
+                                ),
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(
+                                      myuser.value.image!),
+                                ),
+                                shape: BoxShape.circle,
+                                color: Colors.grey,
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.camera_alt_outlined,
+                                  size: 40,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                                : Container(
+                              width: 120,
+                              height: 120,
+                              margin:
+                              const EdgeInsets.only(bottom: 20),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey,
+                              ),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.camera_alt_outlined,
+                                  size: 40,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                                : Container(
+                              width: 120,
+                              height: 120,
+                              margin: const EdgeInsets.only(bottom: 20),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: FileImage(selectedImage!),
+                                  fit: BoxFit.fill,
+                                ),
+                                shape: BoxShape.circle,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    );
+                  }),
+                ),
+              ),
               Consumer<ProfileProvider>(
                 builder: (context, value, child) => CustomTextFormField(
                   focusNode: value.nameFocusNode,
                   controller: value.firstname,
                   prefixIcon: Icons.person,
-                  hintText: 'Enter Your First Name',
+                  hintText: 'Enter Your Full Name',
                   readOnly: !value.isEditing,
                   enabled: value.isEditing,
                   textColor: value.isEditing ? Colors.black : Colors.grey,
@@ -84,7 +169,7 @@ class _ProfileState extends State<Profile> {
                   focusNode: value.emailFocusNode,
                   controller: value.lastname,
                   prefixIcon: Icons.person_2_outlined,
-                  hintText: 'Enter Your Last Name',
+                  hintText: 'Enter Your Address',
                   readOnly: !value.isEditing,
                   enabled: value.isEditing,
                   textColor: value.isEditing ? Colors.black : Colors.grey,
@@ -120,7 +205,7 @@ class _ProfileState extends State<Profile> {
                       text: 'Save',
                       onPressed: () async {
                         providerController.isEditing = false;
-                        providerController.storeUserInfo();
+                        await providerController.storeUserInfo();
                       },
                     ),
                 ],

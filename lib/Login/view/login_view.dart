@@ -74,13 +74,6 @@ class Login extends StatelessWidget {
                     onPressed: () async {
                       await authservice.login(context, emailController.text,
                           passwordController.text);
-
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MyHomePage(),
-                        ),
-                      );
                     },
                   ),
                 ],
