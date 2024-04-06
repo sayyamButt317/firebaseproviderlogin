@@ -68,90 +68,91 @@ class _ProfileState extends State<Profile> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                width: 300,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                    const Center(),
-                SizedBox(
-                  height: Get.height * 0.2,
-                  child: Obx(() {
-                    return Stack(
-                      children: [
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: GestureDetector(
-                            onTap: () {
-                              getImage(ImageSource.camera);
-                            },
-                            child: selectedImage == null
-                                ? (myuser.value.image != null &&
-                                myuser.value.image!.isNotEmpty)
-                                ? Container(
-                              width: 120,
-                              height: 120,
-                              margin:
-                              const EdgeInsets.only(bottom: 20),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.grey,
-                                  width: 5,
-                                ),
-                                image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: NetworkImage(
-                                      myuser.value.image!),
-                                ),
-                                shape: BoxShape.circle,
-                                color: Colors.grey,
-                              ),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.camera_alt_outlined,
-                                  size: 40,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                                : Container(
-                              width: 120,
-                              height: 120,
-                              margin:
-                              const EdgeInsets.only(bottom: 20),
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.grey,
-                              ),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.camera_alt_outlined,
-                                  size: 40,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                                : Container(
-                              width: 120,
-                              height: 120,
-                              margin: const EdgeInsets.only(bottom: 20),
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: FileImage(selectedImage!),
-                                  fit: BoxFit.fill,
-                                ),
-                                shape: BoxShape.circle,
-                                color: Colors.grey,
-                              ),
+              Consumer<ProfileProvider>(
+                builder: (context, value, child) => SizedBox(
+          width: 300,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+              const Center(),
+          SizedBox(
+            height:  MediaQuery.sizeOf(context).height* 0.2,
+               child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: GestureDetector(
+                      onTap: () {
+                        getImage(ImageSource.camera);
+                      },
+                      child: selectedImage == null
+                          ? (myuser.value.image != null &&
+                          myuser.value.image!.isNotEmpty)
+                          ? Container(
+                        width: 120,
+                        height: 120,
+                        margin:
+                        const EdgeInsets.only(bottom: 20),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 5,
+                          ),
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(
+                                myuser.value.image!
                             ),
                           ),
-                        )
-                      ],
-                    );
-                  }),
-                ),
+                          shape: BoxShape.circle,
+                          color: Colors.grey,
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.camera_alt_outlined,
+                            size: 40,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                          : Container(
+                        width: 120,
+                        height: 120,
+                        margin:
+                        const EdgeInsets.only(bottom: 20),
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey,
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.camera_alt_outlined,
+                            size: 40,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                          : Container(
+                        width: 120,
+                        height: 120,
+                        margin: const EdgeInsets.only(bottom: 20),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: FileImage(selectedImage!),
+                            fit: BoxFit.fill,
+                          ),
+                          shape: BoxShape.circle,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+
+            ),
               ),
+
               Consumer<ProfileProvider>(
                 builder: (context, value, child) => CustomTextFormField(
                   focusNode: value.nameFocusNode,

@@ -4,6 +4,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../Model/Info_model.dart';
 
 class ProfileProvider extends ChangeNotifier {
+
+  final myuser = ValueNotifier<InfoModel>(InfoModel(uid: ''));
+
+  final TextEditingController firstname = TextEditingController();
+  final TextEditingController lastname = TextEditingController();
+  final TextEditingController email = TextEditingController();
+
+  final FocusNode nameFocusNode = FocusNode();
+  final FocusNode emailFocusNode = FocusNode();
+
   late bool _isEditing = false;
   bool get isEditing => _isEditing;
 
@@ -46,12 +56,38 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-  final myuser = ValueNotifier<InfoModel>(InfoModel(uid: ''));
+  File? selectedImage;
+  Future<void> getImage(ImageSource camera) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(
+      maxWidth: 150,
+      maxHeight: 200,
+      source: camera,
+    );
+    if (image != null) {
+      setState(() {
+        selectedImage = File(image.path);
+      });
+    }
+  }
 
-  final TextEditingController firstname = TextEditingController();
-  final TextEditingController lastname = TextEditingController();
-  final TextEditingController email = TextEditingController();
+  Future<String> uploadImage(File? image) async {
+    if (image == null) {
+      return '';
+    }
 
-  final FocusNode nameFocusNode = FocusNode();
-  final FocusNode emailFocusNode = FocusNode();
+    String imageUrl = '';
+    try {
+      String fileName = Path.basename(image.path);
+      var reference = FirebaseStorage.instance.ref().child('users/$fileName');
+      TaskSnapshot taskSnapshot = await reference.putFile(image);
+      imageUrl = await taskSnapshot.ref.getDownloadURL();
+      debugPrint("Download URL: $imageUrl");
+    } catch (error) {
+      debugPrint("Image Upload Error: $error");
+    }
+    return imageUrl;
+  }
+
+
 }
