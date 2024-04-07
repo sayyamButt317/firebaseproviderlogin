@@ -22,6 +22,9 @@ class _ProfileState extends State<Profile> {
     providerController = Provider.of<ProfileProvider>(context, listen: false);
     providerController.loadData();
   }
+  void SelectedImage(){
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,83 +78,21 @@ class _ProfileState extends State<Profile> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-              const Center(),
-          SizedBox(
-            height:  MediaQuery.sizeOf(context).height* 0.2,
-               child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: GestureDetector(
-                      onTap: () {
-                        providerController.getImage(ImageSource.camera);
-                      },
-                      child: selectedImage == null
-                          ? (myuser.value.image != null &&
-                          myuser.value.image!.isNotEmpty)
-                          ? Container(
-                        width: 120,
-                        height: 120,
-                        margin:
-                        const EdgeInsets.only(bottom: 20),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 5,
-                          ),
-                          image: DecorationImage(
-                            fit: BoxFit.fill,
-                            image: NetworkImage(
-                                myuser.value.image!
-                            ),
-                          ),
-                          shape: BoxShape.circle,
-                          color: Colors.grey,
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.camera_alt_outlined,
-                            size: 40,
-                            color: Colors.white,
-                          ),
-                        ),
-                      )
-                          : Container(
-                        width: 120,
-                        height: 120,
-                        margin:
-                        const EdgeInsets.only(bottom: 20),
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.grey,
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.camera_alt_outlined,
-                            size: 40,
-                            color: Colors.white,
-                          ),
-                        ),
-                      )
-                          : Container(
-                        width: 120,
-                        height: 120,
-                        margin: const EdgeInsets.only(bottom: 20),
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: FileImage(selectedImage!),
-                            fit: BoxFit.fill,
-                          ),
-                          shape: BoxShape.circle,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-
-            ),
+              CircularAvatar(
+              radius:64,
+              backgroundImage:const NetworkImage(""),
+              Positioned(
+              bottom:-10,
+              left:80,
+              child:IconButton(
+              onPressed:(){
+               },
+               icon:const Icon(Icons.add_a_photo),
               ),
+),
+             ),
+         
+                     
 
               Consumer<ProfileProvider>(
                 builder: (context, value, child) => CustomTextFormField(

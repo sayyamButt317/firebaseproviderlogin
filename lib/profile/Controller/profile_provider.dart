@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../Model/Info_model.dart';
 
 class ProfileProvider extends ChangeNotifier {
-
   final myuser = ValueNotifier<InfoModel>(InfoModel(uid: ''));
 
   final TextEditingController firstname = TextEditingController();
@@ -19,6 +20,14 @@ class ProfileProvider extends ChangeNotifier {
 
   set isEditing(bool value) {
     _isEditing = value;
+    notifyListeners();
+  }
+
+  XFile? _selectedImage;
+  XFile? get selectedImage => _selectedImage;
+
+  set selectedImage(XFile? image) {
+    _selectedImage = XFile(image!.path);
     notifyListeners();
   }
 
@@ -56,22 +65,19 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-  File? selectedImage;
-  Future<void> getImage(ImageSource camera) async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(
+  Future<void> getImage(ImageSource gallery) async {
+    final ImagePicker imagepicker = ImagePicker();
+    final XFile? image = await imagepicker.pickImage(
       maxWidth: 150,
       maxHeight: 200,
-      source: camera,
+      source: gallery,
     );
     if (image != null) {
-      setState(() {
-        selectedImage = File(image.path);
-      });
+      selectedImage = XFile(image.path);
     }
   }
 
-  Future<String> uploadImage(File? image) async {
+  Future<String> uploadImage(XFile? image) async {
     if (image == null) {
       return '';
     }
@@ -79,7 +85,8 @@ class ProfileProvider extends ChangeNotifier {
     String imageUrl = '';
     try {
       String fileName = Path.basename(image.path);
-      var reference = FirebaseStorage.instance.ref().child('users/$fileName');
+      var reference =
+          FirebaseStorage.instance.ref().child('profileimage/$fileName');
       TaskSnapshot taskSnapshot = await reference.putFile(image);
       imageUrl = await taskSnapshot.ref.getDownloadURL();
       debugPrint("Download URL: $imageUrl");
@@ -88,6 +95,4 @@ class ProfileProvider extends ChangeNotifier {
     }
     return imageUrl;
   }
-
-
 }
