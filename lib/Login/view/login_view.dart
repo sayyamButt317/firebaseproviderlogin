@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:login/Home/view/home.dart';
 import 'package:login/Signup/view/signup.dart';
 import 'package:provider/provider.dart';
-import '../../../Widget/btn.dart';
-import '../../../Widget/textfeild.dart';
 import '../../Services/auth.dart';
-import '../../profile/view/profile.dart';
+import '../../widget/btn.dart';
+import '../../widget/textfeild.dart';
 
 class Login extends StatelessWidget {
   Login({super.key});

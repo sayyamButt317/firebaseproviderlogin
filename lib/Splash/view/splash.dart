@@ -1,29 +1,26 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 
-import '../Controller/splash_controller.dart';
+import '../../Services/check_login.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({
-    super.key,
-  });
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
-  State<SplashScreen> createState() => _MyWidgetState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _MyWidgetState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    final providercontroller =
-        Provider.of<SplashProvider>(context, listen: false);
     Timer(
       const Duration(seconds: 3),
       () {
-        providercontroller.checkLogin(context);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginStatus()),
+        );
       },
     );
   }

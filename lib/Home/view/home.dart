@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'dart:math';
 
-import '../../../Widget/btn.dart';
-import '../../../Widget/textfeild.dart';
+import 'package:flutter/material.dart';
+import 'package:login/Login/view/login_view.dart';
+import 'package:provider/provider.dart';
 import '../../Services/auth.dart';
-import '../../Splash/Controller/splash_controller.dart';
 import '../../profile/Controller/profile_provider.dart';
-import '../Controller/home_provider.dart';
+import '../../widget/textfeild.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -37,7 +36,7 @@ class MyHomePage extends StatelessWidget {
                     TextButton(
                       onPressed: () async {
                         auth.signOut();
-                        Navigator.pop(context);
+                        Navigator.push(context,MaterialPageRoute(builder: ((context) => Login())));
                       },
                       child: const Text('Logout'),
                     ),
@@ -69,6 +68,7 @@ class MyHomePage extends StatelessWidget {
                       controller: providerController.firstname,
                       prefixIcon: Icons.person,
                       readOnly: true,
+                      textColor: Colors.grey,
                       hintText: '',
                     ),
                     const SizedBox(
@@ -78,6 +78,7 @@ class MyHomePage extends StatelessWidget {
                       controller: providerController.lastname,
                       prefixIcon: Icons.person,
                       readOnly: true,
+                      textColor: Colors.grey,
                       hintText: '',
                     ),
                     const SizedBox(
@@ -87,6 +88,7 @@ class MyHomePage extends StatelessWidget {
                       controller: providerController.email,
                       hintText: '',
                       readOnly: true,
+                      textColor: Colors.grey,
                     ),
                     const SizedBox(height: 15),
                   ],

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:login/Services/auth.dart';
 import 'package:login/Signup/Controller/signup_provider.dart';
 import 'package:provider/provider.dart';
-import '../../../Widget/btn.dart';
-import '../../../Widget/textfeild.dart';
 import '../../Login/view/login_view.dart';
+import '../../widget/btn.dart';
+import '../../widget/textfeild.dart';
 
 class Signup extends StatelessWidget {
   Signup({super.key});

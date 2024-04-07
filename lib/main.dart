@@ -7,9 +7,10 @@ import 'package:login/Splash/Controller/splash_controller.dart';
 import 'package:login/profile/Controller/profile_provider.dart';
 import 'package:login/profile/view/profile.dart';
 import 'package:provider/provider.dart';
-import 'Home/Controller/home_provider.dart';
+import 'Home/view/home.dart';
 import 'Login/view/login_view.dart';
 import 'Signup/view/signup.dart';
+import 'Splash/view/splash.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -43,10 +44,11 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => const LoginStatus(),
+        '/': (context) => const SplashScreen(),
         '/login': (context) => Login(),
         '/signup': (context) => Signup(),
-        '/Profile': (context) => Profile(),
+        '/Profile': (context) => const Profile(),
+        '/Home': (context) => MyHomePage(),
       },
     );
   }
