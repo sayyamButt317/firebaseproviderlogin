@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:login/Services/auth.dart';
-import 'package:login/Services/check_login.dart';
 import 'package:login/Signup/Controller/signup_provider.dart';
 import 'package:login/Splash/Controller/splash_controller.dart';
 import 'package:login/profile/Controller/profile_provider.dart';

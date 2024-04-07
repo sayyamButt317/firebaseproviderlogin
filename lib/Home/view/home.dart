@@ -1,23 +1,33 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:login/Login/view/login_view.dart';
 import 'package:provider/provider.dart';
 import '../../Services/auth.dart';
 import '../../profile/Controller/profile_provider.dart';
-import '../../widget/textfeild.dart';
 
-class MyHomePage extends StatelessWidget {
-  MyHomePage({super.key});
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
 
-  final _formKey = GlobalKey<FormState>();
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  late ProfileProvider providerController;
+
+  @override
+  void initState() {
+    super.initState();
+    providerController = Provider.of<ProfileProvider>(context, listen: false);
+    providerController.loadData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final providerController = Provider.of<ProfileProvider>(context, listen: false);
     final auth = Provider.of<AuthService>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
+        automaticallyImplyLeading: true,
         leading: IconButton(
           onPressed: () async {
             showDialog(
@@ -36,7 +46,8 @@ class MyHomePage extends StatelessWidget {
                     TextButton(
                       onPressed: () async {
                         auth.signOut();
-                        Navigator.push(context,MaterialPageRoute(builder: ((context) => Login())));
+                        Navigator.push(
+                            context, MaterialPageRoute(builder: ((context) => Login())));
                       },
                       child: const Text('Logout'),
                     ),
@@ -56,69 +67,50 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Form(
-                key: _formKey,
-                child: Column(
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
                   children: [
-                    CustomTextFormField(
-                      controller: providerController.firstname,
-                      prefixIcon: Icons.person,
-                      readOnly: true,
-                      textColor: Colors.grey,
-                      hintText: '',
+                    const Icon(Icons.person, color: Colors.grey),
+                    const SizedBox(width: 10),
+                    Text(
+                      providerController.firstname.text,
+                      style: const TextStyle(color: Colors.grey),
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    CustomTextFormField(
-                      controller: providerController.lastname,
-                      prefixIcon: Icons.person,
-                      readOnly: true,
-                      textColor: Colors.grey,
-                      hintText: '',
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    CustomTextFormField(
-                      controller: providerController.email,
-                      hintText: '',
-                      readOnly: true,
-                      textColor: Colors.grey,
-                    ),
-                    const SizedBox(height: 15),
                   ],
                 ),
-              ),
-              // Row(
-              //   children: [
-              //     AppButton(
-              //       text: ("Sign Up"),
-              //       width: MediaQuery.sizeOf(context).width * 0.89,
-              //       onPressed: () async {
-              //         if (_formKey.currentState!.validate()) {
-              //           final SharedPreferences sharedPreferences =
-              //               await SharedPreferences.getInstance();
-              //           sharedPreferences.setString(
-              //               'fullname', providerController.name.text);
-              //           sharedPreferences.setString(
-              //               'email', providerController.email.text);
-              //           sharedPreferences.setString(
-              //               'password', providerController.password.text);
-              //           Navigator.push(
-              //             context,
-              //             MaterialPageRoute(builder: (context) => MyHomePage()),
-              //           );
-              //         }
-              //       },
-              //     ),
-              //   ],
-              // ),
-            ],
+                const SizedBox(height: 15),
+                Row(
+                  children: [
+                    const Icon(Icons.home, color: Colors.grey),
+                    const SizedBox(width: 10),
+                    Text(
+                      providerController.address.text,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15),
+                Row(
+                  children: [
+                    const Icon(Icons.email, color: Colors.grey),
+                    const SizedBox(width: 10),
+                    Text(
+                      providerController.email.text,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
