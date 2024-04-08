@@ -36,44 +36,45 @@ class AuthService extends ChangeNotifier {
     return _auth.authStateChanges().map((user) => _userFromFirebase(user));
   }
 
-   Future<void> login(
-      BuildContext context, String email, String password) async {
-    try {
-      final UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      final User? user = userCredential.user;
-      if (user != null) {
-        if (hasEnteredProfiledata) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => MyHomePage()),
-          );
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const Profile()),
-          );
-        }
+ Future<void> login(BuildContext context, String email, String password) async {
+  try {
+    final UserCredential userCredential =
+        await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    final User? user = userCredential.user;
+    if (user != null) {
+      if (!hasEnteredProfiledata) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Profile()),
+        );
+        hasEnteredProfiledata = true;
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MyHomePage()),
+        );
       }
-    } on FirebaseAuthException catch (error) {
-      String errorMessage = 'An error occurred while logging in';
-      if (error.code == 'user-not-found') {
-        errorMessage = 'User not found';
-      } else if (error.code == 'wrong-password') {
-        errorMessage = 'Invalid password';
-      }
-      debugPrint(errorMessage);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          duration: const Duration(seconds: 3),
-        ),
-      );
     }
+  } on FirebaseAuthException catch (error) {
+    String errorMessage = 'An error occurred while logging in';
+    if (error.code == 'user-not-found') {
+      errorMessage = 'User not found';
+    } else if (error.code == 'wrong-password') {
+      errorMessage = 'Invalid password';
+    }
+    debugPrint(errorMessage);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
+}
+
 Future<void> signup(
   BuildContext context, String email, String password) async {
   try {
@@ -84,7 +85,7 @@ Future<void> signup(
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => Login()), // Navigate to your login screen
+      MaterialPageRoute(builder: (context) => Login()), 
     );
   } catch (error) {
     debugPrint(error.toString());

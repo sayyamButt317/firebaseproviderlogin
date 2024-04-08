@@ -12,18 +12,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late ProfileProvider providerController;
-
+   late ProfileProvider providerController;
   @override
   void initState() {
     super.initState();
     providerController = Provider.of<ProfileProvider>(context, listen: false);
     providerController.loadData();
+  
   }
 
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthService>(context);
+    final profileProvider = Provider.of<ProfileProvider>(context); // Add this line
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -81,9 +83,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     const Icon(Icons.person, color: Colors.grey),
                     const SizedBox(width: 10),
-                    Text(
-                      providerController.firstname.text,
-                      style: const TextStyle(color: Colors.grey),
+                    Consumer<ProfileProvider>(
+                      builder: (context, value, child) => Text(
+                        profileProvider.myuser.value.firstname ?? '', 
+                        style: const TextStyle(color: Colors.grey),
+                      ),
                     ),
                   ],
                 ),
@@ -92,9 +96,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     const Icon(Icons.home, color: Colors.grey),
                     const SizedBox(width: 10),
-                    Text(
-                      providerController.address.text,
-                      style: const TextStyle(color: Colors.grey),
+                    Consumer<ProfileProvider>(
+                      builder: (context, value, child) => Text(
+                        profileProvider.myuser.value.address ?? '', 
+                        style: const TextStyle(color: Colors.grey),
+                      ),
                     ),
                   ],
                 ),
@@ -103,9 +109,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     const Icon(Icons.email, color: Colors.grey),
                     const SizedBox(width: 10),
-                    Text(
-                      providerController.email.text,
-                      style: const TextStyle(color: Colors.grey),
+                    Consumer<ProfileProvider>(
+                      builder: (context, value, child) => Text(
+                        profileProvider.myuser.value.email ?? '',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
                     ),
                   ],
                 ),

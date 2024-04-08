@@ -16,7 +16,7 @@ class LoginStatus extends StatelessWidget {
         builder: (_, AsyncSnapshot<UserModel?> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             final UserModel? user = snapshot.data;
-            return user == null ? Login() : MyHomePage();
+            return user == null ? Login() : const MyHomePage();
           } else {
             return const Scaffold(
               body: Center(

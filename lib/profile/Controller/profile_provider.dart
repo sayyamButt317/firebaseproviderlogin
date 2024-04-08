@@ -70,6 +70,7 @@ class ProfileProvider extends ChangeNotifier {
   }
 
 Future<void> storeUserInfo() async {
+  
   final user = FirebaseAuth.instance.currentUser;
   if (user != null) {
     final uid = user.uid;
@@ -110,6 +111,7 @@ Future<void> loadData() async {
     }
   }
 }
+
 
 
 }
