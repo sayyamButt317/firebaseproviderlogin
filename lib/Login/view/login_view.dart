@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:login/Signup/view/signup.dart';
 import 'package:provider/provider.dart';

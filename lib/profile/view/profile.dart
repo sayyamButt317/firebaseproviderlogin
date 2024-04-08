@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:login/Home/view/home.dart';
@@ -173,7 +172,7 @@ GestureDetector(
                                       onPressed: () async {
                                         value.isEditing = false;
                                         await value.storeUserInfo();
-                                        Navigator.push(context, MaterialPageRoute(builder:((context) => const MyHomePage())));;
+                                        Navigator.push(context, MaterialPageRoute(builder:((context) => const MyHomePage())));
                                       },
                                     ),
                                 ],
