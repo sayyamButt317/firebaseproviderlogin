@@ -16,8 +16,8 @@ class ProfileProvider extends ChangeNotifier {
   final TextEditingController address = TextEditingController();
 
   final FocusNode firstnameFocusNode = FocusNode();
-    final FocusNode lastnameFocusNode = FocusNode();
-      final FocusNode addressFocusNode = FocusNode();
+  final FocusNode lastnameFocusNode = FocusNode();
+  final FocusNode addressFocusNode = FocusNode();
   final FocusNode emailFocusNode = FocusNode();
 
   late bool _isEditing = false;
@@ -69,49 +69,45 @@ class ProfileProvider extends ChangeNotifier {
     return imageUrl;
   }
 
-Future<void> storeUserInfo() async {
-  
-  final user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    final uid = user.uid;
-    String imageUrl = await uploadImage(selectedImage);
-    await FirebaseFirestore.instance
-        .collection('Information_Form')
-        .doc(uid)
-        .set({
-      'firstname': firstname.text,
-      'lastname': lastname.text,
-      'address': address.text,
-      'email': email.text,
-      'image': imageUrl, 
-    }, SetOptions(merge: true)).onError(
-            (e, _) => print("Error writing document: $e"));
+  Future<void> storeUserInfo() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final uid = user.uid;
+      String imageUrl = await uploadImage(selectedImage);
+      await FirebaseFirestore.instance
+          .collection('Information_Form')
+          .doc(uid)
+          .set({
+        'firstname': firstname.text,
+        'lastname': lastname.text,
+        'address': address.text,
+        'email': email.text,
+        'image': imageUrl,
+      }, SetOptions(merge: true)).onError(
+              (e, _) => print("Error writing document: $e"));
+    }
   }
-}
 
-Future<void> loadData() async {
-  final user = FirebaseAuth.instance.currentUser;
-  if (user != null) {
-    final uid = user.uid;
-    final snapshot = await FirebaseFirestore.instance
-        .collection('Information_Form')
-        .doc(uid)
-        .get();
-    final data = snapshot.data();
-    if (data != null) {
-      myuser.value = InfoModel.fromJson(data);
-      firstname.text = myuser.value.firstname ?? '';
-      lastname.text = myuser.value.lastname ?? '';
-      address.text = myuser.value.address ?? '';
-      email.text = myuser.value.email ?? '';
-      String imageUrl = data['image'];
-      if (imageUrl.isNotEmpty) {
-        selectedImage = XFile(imageUrl);
+  Future<void> loadData() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final uid = user.uid;
+      final snapshot = await FirebaseFirestore.instance
+          .collection('Information_Form')
+          .doc(uid)
+          .get();
+      final data = snapshot.data();
+      if (data != null) {
+        myuser.value = InfoModel.fromJson(data);
+        firstname.text = myuser.value.firstname ?? '';
+        lastname.text = myuser.value.lastname ?? '';
+        address.text = myuser.value.address ?? '';
+        email.text = myuser.value.email ?? '';
+        String imageUrl = data['image'] ?? ''; // Ensure it's not null
+        selectedImage = imageUrl.isNotEmpty
+            ? XFile(imageUrl)
+            : null; // Set selectedImage even if imageUrl is empty
       }
     }
   }
-}
-
-
-
 }

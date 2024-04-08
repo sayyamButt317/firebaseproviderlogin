@@ -12,13 +12,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-   late ProfileProvider providerController;
+  late ProfileProvider providerController;
   @override
   void initState() {
     super.initState();
     providerController = Provider.of<ProfileProvider>(context, listen: false);
     providerController.loadData();
-  
+
   }
 
   @override
@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     const SizedBox(width: 10),
                     Consumer<ProfileProvider>(
                       builder: (context, value, child) => Text(
-                        profileProvider.myuser.value.firstname ?? '', 
+                        profileProvider.myuser.value.firstname ?? '',
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ),
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     const SizedBox(width: 10),
                     Consumer<ProfileProvider>(
                       builder: (context, value, child) => Text(
-                        profileProvider.myuser.value.address ?? '', 
+                        profileProvider.myuser.value.address ?? '',
                         style: const TextStyle(color: Colors.grey),
                       ),
                     ),

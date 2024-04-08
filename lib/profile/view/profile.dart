@@ -49,58 +49,62 @@ class _ProfileState extends State<Profile> {
                   return const CircularProgressIndicator();
                 } else {
                   return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment
+                        .center,
+                    crossAxisAlignment: CrossAxisAlignment
+                        .center,
                     children: [
                       Consumer<ProfileProvider>(
-          builder: (context, value, child) => SizedBox(
-            width: 300,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-GestureDetector(
-  onTap: selectImage,
-  child: value.selectedImage != null
-    ? Container(
-        width: 150,
-        height: 150,
-        margin: const EdgeInsets.only(bottom: 5),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.black,
-            width: 1,
-          ),
-          shape: BoxShape.circle,
-          color: Colors.grey,
-        ),
-        child: ClipOval(
-          child: Image.file(
-            File(value.selectedImage!.path),
-            fit: BoxFit.cover,
-          ),
-        ),
-      )
-    : Container(
-        width: 120,
-        height: 120,
-        margin: const EdgeInsets.only(bottom: 5),
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.grey,
-        ),
-        child: const Center(
-          child: Icon(
-            Icons.camera_alt_outlined,
-            size: 30,
-            color: Colors.white,
-          ),
-        ),
-      ),
-),
-
-
-
+                        builder: (context, value, child) => SizedBox(
+                          width: 300,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment
+                                .center,
+                            crossAxisAlignment: CrossAxisAlignment
+                                .center,
+                            children: [
+                              GestureDetector(
+                                onTap: selectImage,
+                                child: value.selectedImage != null
+                                    ? Container(
+                                        width: 150,
+                                        height: 150,
+                                        margin:
+                                            const EdgeInsets.only(bottom: 5),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.black,
+                                            width: 1,
+                                          ),
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey,
+                                        ),
+                                        child: ClipOval(
+                                          child: Image.file(
+                                            File(value.selectedImage!.path),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        width: 120,
+                                        height: 120,
+                                        margin:
+                                            const EdgeInsets.only(bottom: 5),
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.grey,
+                                        ),
+                                        child: const Center(
+                                          child: Icon(
+                                            Icons.camera_alt_outlined,
+                                            size: 30,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                              ),
+                               SizedBox(height: MediaQuery.of(context).size.height * 0.08),
                               CustomTextFormField(
                                 focusNode: value.firstnameFocusNode,
                                 controller: value.firstname,
@@ -112,7 +116,7 @@ GestureDetector(
                                     ? Colors.black
                                     : Colors.grey,
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 15),
                               CustomTextFormField(
                                 focusNode: value.lastnameFocusNode,
                                 controller: value.lastname,
@@ -124,7 +128,7 @@ GestureDetector(
                                     ? Colors.black
                                     : Colors.grey,
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 15),
                               CustomTextFormField(
                                 focusNode: value.addressFocusNode,
                                 controller: value.address,
@@ -136,7 +140,7 @@ GestureDetector(
                                     ? Colors.black
                                     : Colors.grey,
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 15),
                               CustomTextFormField(
                                 controller: value.email,
                                 prefixIcon: Icons.alternate_email,
@@ -147,16 +151,15 @@ GestureDetector(
                                     ? Colors.black
                                     : Colors.grey,
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 20),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   if (!value.isEditing)
                                     AppButton(
-                                      width:
-                                          MediaQuery.of(context).size.width *
-                                              0.7,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.6,
                                       text: 'Edit',
                                       onPressed: () async {
                                         value.isEditing = true;
@@ -165,14 +168,17 @@ GestureDetector(
                                     ),
                                   if (value.isEditing)
                                     AppButton(
-                                      width:
-                                          MediaQuery.of(context).size.width *
-                                              0.7,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.6,
                                       text: 'Save',
                                       onPressed: () async {
                                         value.isEditing = false;
                                         await value.storeUserInfo();
-                                        Navigator.push(context, MaterialPageRoute(builder:((context) => const MyHomePage())));
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: ((context) =>
+                                                    const MyHomePage())));
                                       },
                                     ),
                                 ],
@@ -192,5 +198,3 @@ GestureDetector(
     );
   }
 }
-
-  
