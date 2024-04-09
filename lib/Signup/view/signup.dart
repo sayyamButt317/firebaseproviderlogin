@@ -75,7 +75,7 @@ class Signup extends StatelessWidget {
                 children: [
                   AppButton(
                     text: ("Sign Up"),
-                    width: MediaQuery.sizeOf(context).width * 0.89,
+                    width: MediaQuery.sizeOf(context).width * 0.8,
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         String email =

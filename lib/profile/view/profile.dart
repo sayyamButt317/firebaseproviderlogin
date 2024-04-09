@@ -196,8 +196,7 @@ class _ProfileState extends State<Profile> {
                                       onPressed: () async {
                                         value.isEditing = false;
                                         await value.storeUserInfo();
-                                        authService
-                                            .updateProfileDataStatus(true);
+
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
