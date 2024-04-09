@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:login/Home/view/home.dart';
@@ -202,10 +200,11 @@ class _ProfileState extends State<Profile> {
                                             .updateProfileDataStatus(true);
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => MyHomePage()),
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MyHomePage()),
                                         );
                                       },
-
                                     ),
                                 ],
                               ),

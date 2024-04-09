@@ -38,9 +38,11 @@ class AuthService extends ChangeNotifier {
     return _auth.authStateChanges().map((user) => _userFromFirebase(user));
   }
 
-  Future<void> login(BuildContext context, String email, String password) async {
+  Future<void> login(
+      BuildContext context, String email, String password) async {
     try {
-      final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      final UserCredential userCredential =
+          await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -61,33 +63,39 @@ class AuthService extends ChangeNotifier {
           );
         }
       }
-    } on FirebaseAuthException catch (error) {
-      // Handle authentication errors
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        print('The account already exists for that email.');
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
-Future<void> signup(
-  BuildContext context, String email, String password) async {
-  try {
-    await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+  Future<void> signup(
+      BuildContext context, String email, String password) async {
+    try {
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => Login()), 
-    );
-  } catch (error) {
-    debugPrint(error.toString());
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(error.toString()),
-        duration: const Duration(seconds: 3),
-      ),
-    );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+      );
+    } catch (error) {
+      debugPrint(error.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
-}
 
   Future<void> signOut() async {
     await _auth.signOut();
