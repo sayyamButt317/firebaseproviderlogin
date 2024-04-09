@@ -202,7 +202,7 @@ class _ProfileState extends State<Profile> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  MyHomePage()),
+                                                  const MyHomePage()),
                                         );
                                       },
                                     ),

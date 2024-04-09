@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:login/Login/view/login_view.dart';
+import 'package:login/profile/view/profile.dart';
 import 'package:provider/provider.dart';
 import '../../Services/auth.dart';
 import '../../profile/Controller/profile_provider.dart';
@@ -53,8 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     TextButton(
                       onPressed: () async {
                         auth.signOut();
-                        Navigator.push(
-                            context, MaterialPageRoute(builder: ((context) => Login())));
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: ((context) => Login())));
                       },
                       child: const Text('Logout'),
                     ),
@@ -75,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Consumer<ProfileProvider>(
           builder: (context, value, child) {
             if (value.isLoading) {
-              return CircularProgressIndicator(); // Show loading indicator while loading data
+              return const CircularProgressIndicator();
             } else {
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
@@ -89,6 +91,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      GestureDetector(
+                          onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const Profile())),
+                          child: const Icon(Icons.edit)),
                       Row(
                         children: [
                           const Icon(Icons.person, color: Colors.grey),

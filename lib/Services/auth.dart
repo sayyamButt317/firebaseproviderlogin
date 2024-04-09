@@ -10,21 +10,9 @@ class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   bool hasEnteredProfiledata = false;
-
-  // Method to update the profile data status
   void updateProfileDataStatus(bool status) {
     hasEnteredProfiledata = status;
     notifyListeners();
-  }
-
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _password = TextEditingController();
-
-  @override
-  void dispose() {
-    _email.dispose();
-    _password.dispose();
-    super.dispose();
   }
 
   UserModel? _userFromFirebase(User? user) {
@@ -48,15 +36,13 @@ class AuthService extends ChangeNotifier {
       );
       final User? user = userCredential.user;
       if (user != null) {
-        // Check if the user has entered profile data
         if (!hasEnteredProfiledata) {
-          // If not, navigate to the profile screen
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const Profile()),
           );
+          hasEnteredProfiledata = true;
         } else {
-          // If yes, navigate to the home screen
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => const MyHomePage()),
@@ -69,8 +55,14 @@ class AuthService extends ChangeNotifier {
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
       }
-    } catch (e) {
-      print(e);
+    } catch (error) {
+      debugPrint(error.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+          duration: const Duration(seconds: 3),
+        ),
+      );
     }
   }
 
@@ -81,6 +73,9 @@ class AuthService extends ChangeNotifier {
         email: email,
         password: password,
       );
+
+      // Reset profile data status flag when a new user signs up
+      updateProfileDataStatus(false);
 
       Navigator.pushReplacement(
         context,
@@ -94,6 +89,9 @@ class AuthService extends ChangeNotifier {
           duration: const Duration(seconds: 3),
         ),
       );
+    } finally {
+      email = '';
+      password = '';
     }
   }
 

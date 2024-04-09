@@ -37,15 +37,16 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  XFile? _selectedImage;
-  XFile? get selectedImage => _selectedImage;
+  File? _selectedImage;
+  File? get selectedImage => _selectedImage;
 
-  set selectedImage(XFile? image) {
+  set selectedImage(File? image) {
     if (image != null) {
-      _selectedImage = XFile(image.path);
+      selectedImage = File(image.path);
       notifyListeners();
     }
   }
+
   void getImage(ImageSource source) async {
     final ImagePicker imagepicker = ImagePicker();
     final XFile? image = await imagepicker.pickImage(
@@ -54,7 +55,7 @@ class ProfileProvider extends ChangeNotifier {
       source: source,
     );
     if (image != null) {
-      _selectedImage = XFile(image.path); // Update _selectedImage directly
+      _selectedImage = File(image.path);
       notifyListeners();
     }
   }
@@ -68,7 +69,7 @@ class ProfileProvider extends ChangeNotifier {
     try {
       String fileName = Path.basename(image.path);
       var reference =
-      FirebaseStorage.instance.ref().child('profileimage/$fileName');
+          FirebaseStorage.instance.ref().child('profileimage/$fileName');
       TaskSnapshot taskSnapshot = await reference.putFile(File(image.path));
       imageUrl = await taskSnapshot.ref.getDownloadURL();
       debugPrint("Download URL: $imageUrl");
@@ -79,10 +80,20 @@ class ProfileProvider extends ChangeNotifier {
   }
 
   Future<void> storeUserInfo() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final uid = user.uid;
-      String imageUrl = await uploadImage(selectedImage);
+    try {
+      String imageurl = '';
+      if (selectedImage != null) {
+        imageurl = await uploadImage(selectedImage! as XFile?);
+      }
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      if (imageurl.isNotEmpty) {
+        await FirebaseFirestore.instance
+            .collection('profileimage')
+            .doc(uid)
+            .set({
+          'image': imageurl,
+        }, SetOptions(merge: true));
+      }
       await FirebaseFirestore.instance
           .collection('Information_Form')
           .doc(uid)
@@ -91,49 +102,58 @@ class ProfileProvider extends ChangeNotifier {
         'lastname': lastname.text,
         'address': address.text,
         'email': email.text,
-        'image': imageUrl,
-      }, SetOptions(merge: true))
-          .onError((e, _) => print("Error writing document: $e"));
-
-      // Update selectedImage after storing user info
-      if (imageUrl.isNotEmpty) {
-        selectedImage = XFile(imageUrl);
-      }
-      notifyListeners();
+        'uid': uid,
+        'image': imageurl,
+      }, SetOptions(merge: true)).onError(
+              (e, _) => print("Error writing document: $e"));
+    } catch (error) {
+      print('Error saving data: $error');
     }
   }
-
 
   Future<void> loadData() async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final uid = user.uid;
-        final snapshot = await FirebaseFirestore.instance
-            .collection('Information_Form')
-            .doc(uid)
-            .get();
-        final data = snapshot.data();
-        if (data != null) {
-          myuser.value = InfoModel.fromJson(data);
-          firstname.text = myuser.value.firstname ?? '';
-          lastname.text = myuser.value.lastname ?? '';
-          address.text = myuser.value.address ?? '';
-          email.text = myuser.value.email ?? '';
-          String imageUrl = data['image'] ?? '';
-          selectedImage = imageUrl.isNotEmpty ? XFile(imageUrl) : null;
-        }
-      }
-    } catch (error) {
-      print('Error loading data: $error');
-    } finally {
-      firstname.text = '';
-      lastname.text = '';
-      address.text = '';
-      email.text = '';
-      selectedImage = null;
-    }
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    FirebaseFirestore.instance
+        .collection('Information_Form')
+        .doc(uid)
+        .snapshots()
+        .listen((event) {
+      myuser.value = InfoModel.fromJson(event.data() ?? {});
+      selectedImage = (myuser.value.image ?? '') as File?;
+      firstname.text = myuser.value.firstname ?? '';
+      lastname.text = myuser.value.lastname ?? '';
+      address.text = myuser.value.address ?? '';
+      email.text = myuser.value.email ?? '';
+    });
   }
-
-
+  // Future<void> loadData() async {
+  //   try {
+  //     final user = FirebaseAuth.instance.currentUser;
+  //     if (user != null) {
+  //       final uid = user.uid;
+  //       final snapshot = await FirebaseFirestore.instance
+  //           .collection('Information_Form')
+  //           .doc(uid)
+  //           .get();
+  //       final data = snapshot.data();
+  //       if (data != null) {
+  //         myuser.value = InfoModel.fromJson(data);
+  //         firstname.text = myuser.value.firstname ?? '';
+  //         lastname.text = myuser.value.lastname ?? '';
+  //         address.text = myuser.value.address ?? '';
+  //         email.text = myuser.value.email ?? '';
+  //         String imageUrl = data['image'] ?? '';
+  //         selectedImage = imageUrl.isNotEmpty ? XFile(imageUrl) : null;
+  //       }
+  //     }
+  //   } catch (error) {
+  //     print('Error loading data: $error');
+  //   } finally {
+  //     firstname.text = '';
+  //     lastname.text = '';
+  //     address.text = '';
+  //     email.text = '';
+  //     selectedImage = null;
+  //   }
+  // }
 }
