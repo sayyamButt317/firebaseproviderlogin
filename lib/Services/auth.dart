@@ -73,7 +73,6 @@ class AuthService extends ChangeNotifier {
         email: email,
         password: password,
       );
-
       // Reset profile data status flag when a new user signs up
       updateProfileDataStatus(false);
 
@@ -89,9 +88,6 @@ class AuthService extends ChangeNotifier {
           duration: const Duration(seconds: 3),
         ),
       );
-    } finally {
-      email = '';
-      password = '';
     }
   }
 
