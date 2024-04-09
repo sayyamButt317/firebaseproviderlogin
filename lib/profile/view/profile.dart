@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:login/Home/view/home.dart';
@@ -25,8 +26,8 @@ class _ProfileState extends State<Profile> {
     providerController.loadData();
   }
 
-  void selectImage() async {
-    await providerController.getImage(ImageSource.gallery);
+  void getImage(ImageSource source) async {
+    providerController.getImage(source);
   }
 
   @override
@@ -49,62 +50,85 @@ class _ProfileState extends State<Profile> {
                   return const CircularProgressIndicator();
                 } else {
                   return Column(
-                    mainAxisAlignment: MainAxisAlignment
-                        .center,
-                    crossAxisAlignment: CrossAxisAlignment
-                        .center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Consumer<ProfileProvider>(
                         builder: (context, value, child) => SizedBox(
                           width: 300,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment
-                                .center,
-                            crossAxisAlignment: CrossAxisAlignment
-                                .center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               GestureDetector(
-                                onTap: selectImage,
-                                child: value.selectedImage != null
-                                    ? Container(
-                                        width: 150,
-                                        height: 150,
-                                        margin:
-                                            const EdgeInsets.only(bottom: 5),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.black,
-                                            width: 1,
-                                          ),
-                                          shape: BoxShape.circle,
-                                          color: Colors.grey,
-                                        ),
-                                        child: ClipOval(
-                                          child: Image.file(
-                                            File(value.selectedImage!.path),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      )
+                                onTap: () {
+                                  getImage(ImageSource.gallery);
+                                },
+                                child: value.selectedImage == null
+                                    ? (value.myuser.value.image != null &&
+                                            value.myuser.value.image!.isNotEmpty
+                                        ? Container(
+                                            width: 120,
+                                            height: 120,
+                                            margin: const EdgeInsets.only(
+                                                bottom: 20),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.grey,
+                                                width: 5,
+                                              ),
+                                              image: DecorationImage(
+                                                fit: BoxFit.fill,
+                                                image: NetworkImage(
+                                                    value.myuser.value.image!),
+                                              ),
+                                              shape: BoxShape.circle,
+                                              color: Colors.grey,
+                                            ),
+                                            child: const Center(
+                                              child: Icon(
+                                                Icons.camera_alt_outlined,
+                                                size: 40,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          )
+                                        : Container(
+                                            width: 120,
+                                            height: 120,
+                                            margin: const EdgeInsets.only(
+                                                bottom: 20),
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.grey,
+                                            ),
+                                            child: const Center(
+                                              child: Icon(
+                                                Icons.camera_alt_outlined,
+                                                size: 40,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ))
                                     : Container(
                                         width: 120,
                                         height: 120,
                                         margin:
-                                            const EdgeInsets.only(bottom: 5),
-                                        decoration: const BoxDecoration(
+                                            const EdgeInsets.only(bottom: 20),
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                                value.selectedImage!.path),
+                                            fit: BoxFit.fill,
+                                          ),
                                           shape: BoxShape.circle,
                                           color: Colors.grey,
                                         ),
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.camera_alt_outlined,
-                                            size: 30,
-                                            color: Colors.white,
-                                          ),
-                                        ),
                                       ),
                               ),
-                               SizedBox(height: MediaQuery.of(context).size.height * 0.08),
+                              SizedBox(
+                                  height: MediaQuery.of(context).size.height *
+                                      0.08),
                               CustomTextFormField(
                                 focusNode: value.firstnameFocusNode,
                                 controller: value.firstname,
@@ -174,12 +198,14 @@ class _ProfileState extends State<Profile> {
                                       onPressed: () async {
                                         value.isEditing = false;
                                         await value.storeUserInfo();
+                                        authService
+                                            .updateProfileDataStatus(true);
                                         Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: ((context) =>
-                                                    const MyHomePage())));
+                                          context,
+                                          MaterialPageRoute(builder: (context) => MyHomePage()),
+                                        );
                                       },
+
                                     ),
                                 ],
                               ),

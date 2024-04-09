@@ -8,9 +8,11 @@ import '../profile/view/profile.dart';
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  
+
   bool hasEnteredProfiledata = false;
-    void updateProfileDataStatus(bool status) {
+
+  // Method to update the profile data status
+  void updateProfileDataStatus(bool status) {
     hasEnteredProfiledata = status;
     notifyListeners();
   }
@@ -36,44 +38,33 @@ class AuthService extends ChangeNotifier {
     return _auth.authStateChanges().map((user) => _userFromFirebase(user));
   }
 
- Future<void> login(BuildContext context, String email, String password) async {
-  try {
-    final UserCredential userCredential =
-        await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    final User? user = userCredential.user;
-    if (user != null) {
-      if (!hasEnteredProfiledata) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const Profile()),
-        );
-        hasEnteredProfiledata = true;
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MyHomePage()),
-        );
+  Future<void> login(BuildContext context, String email, String password) async {
+    try {
+      final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      final User? user = userCredential.user;
+      if (user != null) {
+        // Check if the user has entered profile data
+        if (!hasEnteredProfiledata) {
+          // If not, navigate to the profile screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const Profile()),
+          );
+        } else {
+          // If yes, navigate to the home screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const MyHomePage()),
+          );
+        }
       }
+    } on FirebaseAuthException catch (error) {
+      // Handle authentication errors
     }
-  } on FirebaseAuthException catch (error) {
-    String errorMessage = 'An error occurred while logging in';
-    if (error.code == 'user-not-found') {
-      errorMessage = 'User not found';
-    } else if (error.code == 'wrong-password') {
-      errorMessage = 'Invalid password';
-    }
-    debugPrint(errorMessage);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(errorMessage),
-        duration: const Duration(seconds: 3),
-      ),
-    );
   }
-}
 
 Future<void> signup(
   BuildContext context, String email, String password) async {

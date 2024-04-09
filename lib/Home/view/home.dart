@@ -13,18 +13,23 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late ProfileProvider providerController;
+
   @override
   void initState() {
     super.initState();
     providerController = Provider.of<ProfileProvider>(context, listen: false);
-    providerController.loadData();
+    loadUserData();
+  }
 
+  Future<void> loadUserData() async {
+    await providerController.loadData();
+    providerController.setLoading(false);
   }
 
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthService>(context);
-    final profileProvider = Provider.of<ProfileProvider>(context); // Add this line
+    final profileProvider = Provider.of<ProfileProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -67,59 +72,61 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.white,
       ),
       body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.person, color: Colors.grey),
-                    const SizedBox(width: 10),
-                    Consumer<ProfileProvider>(
-                      builder: (context, value, child) => Text(
-                        profileProvider.myuser.value.firstname ?? '',
-                        style: const TextStyle(color: Colors.grey),
+        child: Consumer<ProfileProvider>(
+          builder: (context, value, child) {
+            if (value.isLoading) {
+              return CircularProgressIndicator(); // Show loading indicator while loading data
+            } else {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.person, color: Colors.grey),
+                          const SizedBox(width: 10),
+                          Text(
+                            profileProvider.myuser.value.firstname ?? '',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 15),
-                Row(
-                  children: [
-                    const Icon(Icons.home, color: Colors.grey),
-                    const SizedBox(width: 10),
-                    Consumer<ProfileProvider>(
-                      builder: (context, value, child) => Text(
-                        profileProvider.myuser.value.address ?? '',
-                        style: const TextStyle(color: Colors.grey),
+                      const SizedBox(height: 15),
+                      Row(
+                        children: [
+                          const Icon(Icons.home, color: Colors.grey),
+                          const SizedBox(width: 10),
+                          Text(
+                            profileProvider.myuser.value.address ?? '',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 15),
-                Row(
-                  children: [
-                    const Icon(Icons.email, color: Colors.grey),
-                    const SizedBox(width: 10),
-                    Consumer<ProfileProvider>(
-                      builder: (context, value, child) => Text(
-                        profileProvider.myuser.value.email ?? '',
-                        style: const TextStyle(color: Colors.grey),
+                      const SizedBox(height: 15),
+                      Row(
+                        children: [
+                          const Icon(Icons.email, color: Colors.grey),
+                          const SizedBox(width: 10),
+                          Text(
+                            profileProvider.myuser.value.email ?? '',
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          ),
+              );
+            }
+          },
         ),
       ),
     );
