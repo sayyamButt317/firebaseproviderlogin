@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../Home/view/home.dart';
+import '../View/home.dart';
 
 class SplashProvider extends ChangeNotifier {
   void checkLogin(BuildContext context) async {

@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../Home/view/home.dart';
-import '../Login/view/login_view.dart';
+import '../View/home.dart';
+import '../View/login_view.dart';
 import '../Model/user_model.dart';
-import '../profile/view/profile.dart';
+import '../View/profile.dart';
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -64,38 +64,6 @@ class AuthService extends ChangeNotifier {
     } catch (error) {
       print(error);
       return false;
-    }
-  }
-
-  Future<void> signup(
-      BuildContext context, String email, String password) async {
-    try {
-      await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Login()));
-    } on FirebaseAuthException catch (e) {
-      String errorMessage = 'An error occurred while signing up';
-      if (e.code == 'weak-password') {
-        errorMessage = 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        errorMessage = 'The account already exists for that email.';
-      }
-      debugPrint(errorMessage);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          duration: const Duration(seconds: 3),
-        ),
-      );
-    } catch (error) {
-      debugPrint(error.toString());
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred while signing up'),
-          duration: Duration(seconds: 3),
-        ),
-      );
     }
   }
 

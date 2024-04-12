@@ -1,15 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:login/Services/auth.dart';
-import 'package:login/Signup/Controller/signup_provider.dart';
-import 'package:login/Splash/Controller/splash_controller.dart';
-import 'package:login/profile/Controller/profile_provider.dart';
-import 'package:login/profile/view/profile.dart';
+import 'package:login/Controller/signup_provider.dart';
+import 'package:login/Controller/splash_controller.dart';
+import 'package:login/Controller/profile_provider.dart';
+import 'package:login/View/profile.dart';
 import 'package:provider/provider.dart';
-import 'Home/view/home.dart';
-import 'Login/view/login_view.dart';
-import 'Signup/view/signup.dart';
-import 'Splash/view/splash.dart';
+import 'View/home.dart';
+import 'View/login_view.dart';
+import 'View/signup.dart';
+import 'View/splash.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {

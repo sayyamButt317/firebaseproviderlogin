@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
-import '../../Model/Info_model.dart';
+import '../Model/Info_model.dart';
 
 class ProfileProvider extends ChangeNotifier {
   final myuser = ValueNotifier<InfoModel>(InfoModel(uid: ''));

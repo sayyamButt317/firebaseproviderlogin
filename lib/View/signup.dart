@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:login/Services/auth.dart';
-import 'package:login/Signup/Controller/signup_provider.dart';
+import 'package:login/Controller/signup_provider.dart';
 import 'package:provider/provider.dart';
-import '../../Login/view/login_view.dart';
-import '../../widget/btn.dart';
-import '../../widget/textfeild.dart';
+import 'login_view.dart';
+import '../widget/btn.dart';
+import '../widget/textfeild.dart';
 
 class Signup extends StatelessWidget {
   Signup({super.key});
 
   final _formKey = GlobalKey<FormState>();
+    final TextEditingController firstnameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController lastnameController = TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
-    final providerController = Provider.of<SignupProvider>(context);
     final authService = Provider.of<AuthService>(context);
     return Scaffold(
       appBar: AppBar(
@@ -24,7 +29,11 @@ class Signup extends StatelessWidget {
         backgroundColor: Colors.white,
       ),
       body: Center(
-        child: SingleChildScrollView(
+        child: ChangeNotifierProvider(
+          create: (_) => SignupProvider(),
+          child:Consumer<SignupProvider>(
+            builder: (context,provider,child){
+           return SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -35,20 +44,16 @@ class Signup extends StatelessWidget {
                 child: Column(
                   children: [
                     CustomTextFormField(
-                      controller: providerController.emailController,
+                      controller: emailController,
                       prefixIcon: Icons.alternate_email,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return "Enter Your Email!";
-                        }
-                        return null;
-                      },
+                      validator: (value) => value!.isEmpty return "Enter Your Email!" : null;
+                      
                       keyboardType: TextInputType.emailAddress,
                       hintText: 'Enter Your Email',
                     ),
                     const SizedBox(height: 15),
                     CustomTextFormField(
-                      controller: providerController.passwordController,
+                      controller: passwordController,
                       prefixIcon: Icons.lock,
                       obscureText: true,
                       validator: (String? password) {
@@ -78,11 +83,7 @@ class Signup extends StatelessWidget {
                     width: MediaQuery.sizeOf(context).width * 0.8,
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        String email =
-                            providerController.emailController.text.trim();
-                        String password =
-                            providerController.passwordController.text.trim();
-                        await authService.signup(context, email, password);
+                    provider.signup(firstnameController.text, lastnameController.text,emailController.text, passwordController.text);
                       }
                     },
                   ),
@@ -110,7 +111,8 @@ class Signup extends StatelessWidget {
               ),
             ],
           ),
-        ),
+        );
+          }) ),
       ),
     );
   }

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:login/Home/view/home.dart';
-import 'package:login/Login/view/login_view.dart';
+import 'package:login/View/home.dart';
+import 'package:login/View/login_view.dart';
 import 'package:provider/provider.dart';
 import '../Model/user_model.dart';
 import 'auth.dart';
 
 class LoginStatus extends StatelessWidget {
-  const LoginStatus({super.key,});
+  const LoginStatus({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

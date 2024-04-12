@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:login/Home/view/home.dart';
+import 'package:login/View/home.dart';
 import 'package:login/Services/auth.dart';
 import 'package:provider/provider.dart';
-import '../../widget/btn.dart';
-import '../../widget/textfeild.dart';
+import '../widget/btn.dart';
+import '../widget/textfeild.dart';
 import '../Controller/profile_provider.dart';
 
 class Profile extends StatefulWidget {

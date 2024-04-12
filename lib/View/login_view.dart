@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:login/Signup/view/signup.dart';
+import 'package:login/View/signup.dart';
 import 'package:provider/provider.dart';
-import '../../Services/auth.dart';
-import '../../widget/btn.dart';
-import '../../widget/textfeild.dart';
+import '../Services/auth.dart';
+import '../widget/btn.dart';
+import '../widget/textfeild.dart';
 
 class Login extends StatelessWidget {
   Login({super.key});

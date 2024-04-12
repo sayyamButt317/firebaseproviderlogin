@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:login/Login/view/login_view.dart';
-import 'package:login/profile/view/profile.dart';
+import 'package:login/Controller/profile_provider.dart';
+import 'package:login/View/login_view.dart';
+import 'package:login/View/profile.dart';
 import 'package:provider/provider.dart';
 import '../../Services/auth.dart';
-import '../../profile/Controller/profile_provider.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
