@@ -11,7 +11,7 @@ class Login extends StatelessWidget {
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>(); // Initialize the GlobalKey
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,8 @@ class Login extends StatelessWidget {
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
-          child: Form( // Wrap the form with Form widget
-            key: _formKey, // Assign the _formKey to Form widget
+          child: Form(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -40,7 +40,7 @@ class Login extends StatelessWidget {
                       controller: emailController,
                       prefixIcon: Icons.alternate_email,
                       validator: (value) =>
-                      value!.isEmpty ? 'Please enter your Email' : null,
+                          value!.isEmpty ? 'Please enter your Email' : null,
                       keyboardType: TextInputType.emailAddress,
                       hintText: 'Enter your Email',
                     ),
@@ -50,7 +50,7 @@ class Login extends StatelessWidget {
                       prefixIcon: Icons.lock,
                       obscureText: true,
                       validator: (value) =>
-                      value!.isEmpty ? 'Please enter your password' : null,
+                          value!.isEmpty ? 'Please enter your password' : null,
                       keyboardType: TextInputType.text,
                       hintText: 'Enter your Password',
                     ),

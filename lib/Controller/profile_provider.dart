@@ -18,7 +18,6 @@ class ProfileController extends ChangeNotifier {
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
 
-
   final TextEditingController firstnamecontroller = TextEditingController();
   final TextEditingController lastnamecontroller = TextEditingController();
   final TextEditingController emailcontroller = TextEditingController();
@@ -44,14 +43,15 @@ class ProfileController extends ChangeNotifier {
     _isEditing = value;
     notifyListeners();
   }
+
   late BuildContext _context;
 
   void setContext(BuildContext context) {
     _context = context;
   }
+
   final picker = ImagePicker();
   XFile? _image;
-
 
   XFile? get image => _image;
 
@@ -119,9 +119,7 @@ class ProfileController extends ChangeNotifier {
         .FirebaseStorage.instance
         .ref('/profileimage${SessionController().userId.toString()}');
     firebase_storage.UploadTask uploadTask =
-    storageRef.putFile(File(image!.path).absolute);
-
-    // Use await to wait for the upload task to complete
+        storageRef.putFile(File(image!.path).absolute);
     await uploadTask.whenComplete(() async {
       final newurl = await storageRef.getDownloadURL();
       ref
@@ -155,16 +153,14 @@ class ProfileController extends ChangeNotifier {
     });
   }
 
-
   Future<void> storeUserInfo(BuildContext context) async {
     // Set loading indicator to true
     setLoading(true);
 
     try {
       final uid = FirebaseAuth.instance.currentUser!.uid;
-      final docRef = FirebaseFirestore.instance
-          .collection('Information_Form')
-          .doc(uid);
+      final docRef =
+          FirebaseFirestore.instance.collection('Information_Form').doc(uid);
 
       await docRef.set(
         {
@@ -206,12 +202,10 @@ class ProfileController extends ChangeNotifier {
     }
   }
 
-
   Future<void> loadData() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
-    final docRef = FirebaseFirestore.instance
-        .collection('Information_Form')
-        .doc(uid);
+    final docRef =
+        FirebaseFirestore.instance.collection('Information_Form').doc(uid);
 
     try {
       final snapshot = await docRef.get();
@@ -236,8 +230,6 @@ class ProfileController extends ChangeNotifier {
     } catch (error) {
       print('Error loading data: $error');
     }
+    notifyListeners();
   }
-
-
-
 }
