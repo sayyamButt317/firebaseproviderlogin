@@ -1,31 +1,23 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:login/View/home.dart';
 import 'package:login/View/login_view.dart';
-import 'package:provider/provider.dart';
-import '../Model/user_model.dart';
-import 'auth.dart';
+import 'package:login/View/profile.dart';
 
-class LoginStatus extends StatelessWidget {
-  const LoginStatus({
-    super.key,
-  });
+import 'session_manger.dart';
 
-  @override
-  Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context);
-    return StreamBuilder<UserModel?>(
-        stream: authService.user,
-        builder: (_, AsyncSnapshot<UserModel?> snapshot) {
-          if (snapshot.connectionState == ConnectionState.active) {
-            final UserModel? user = snapshot.data;
-            return user == null ? Login() : const MyHomePage();
-          } else {
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-        });
+class LoginStatus {
+  dynamic checklogin(BuildContext context) {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    final user = auth.currentUser;
+    if (user != null) {
+      SessionController().userId = user.uid.toString();
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const Profile()),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => Login()),
+      );
+    }
   }
 }

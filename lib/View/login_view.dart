@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:login/Controller/login_controller.dart';
 import 'package:login/View/signup.dart';
 import 'package:provider/provider.dart';
-import '../Services/auth.dart';
 import '../widget/btn.dart';
 import '../widget/textfeild.dart';
 
@@ -10,10 +10,10 @@ class Login extends StatelessWidget {
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final authservice = Provider.of<AuthService>(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -36,12 +36,8 @@ class Login extends StatelessWidget {
                   CustomTextFormField(
                     controller: emailController,
                     prefixIcon: Icons.alternate_email,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Enter Your Email!";
-                      }
-                      return null;
-                    },
+                    validator: (value) =>
+                        value!.isEmpty ? 'Please enter your Email' : null,
                     keyboardType: TextInputType.emailAddress,
                     hintText: 'Enter  your Email',
                   ),
@@ -50,13 +46,8 @@ class Login extends StatelessWidget {
                     controller: passwordController,
                     prefixIcon: Icons.lock,
                     obscureText: true,
-                    validator: (String? password) {
-                      if (password == null || password.isEmpty) {
-                        return 'Please enter your password';
-                      }
-
-                      return null;
-                    },
+                    validator: (value) =>
+                        value!.isEmpty ? 'Please enter your password' : null,
                     keyboardType: TextInputType.text,
                     hintText: 'Enter  your Password',
                   ),
@@ -65,14 +56,22 @@ class Login extends StatelessWidget {
               ),
               Row(
                 children: [
-                  AppButton(
-                    text: ("Login"),
-                    width: MediaQuery.sizeOf(context).width * 0.8,
-                    onPressed: () async {
-                      await authservice.login(context, emailController.text,
-                          passwordController.text);
-                    },
-                  ),
+                  ChangeNotifierProvider(
+                      create: (_) => LoginController(),
+                      child: Consumer<LoginController>(
+                          builder: (context, provider, child) {
+                        return AppButton(
+                          text: ("Login"),
+                          loading: provider.loading,
+                          width: MediaQuery.sizeOf(context).width * 0.8,
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              provider.login(context, emailController.text,
+                                  passwordController.text);
+                            }
+                          },
+                        );
+                      })),
                 ],
               ),
               const SizedBox(height: 15),

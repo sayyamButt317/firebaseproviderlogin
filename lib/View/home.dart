@@ -1,10 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:login/Controller/profile_provider.dart';
+import 'package:login/Services/session_manger.dart';
 import 'package:login/View/login_view.dart';
 import 'package:login/View/profile.dart';
 import 'package:provider/provider.dart';
-import '../../Services/auth.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -14,25 +15,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late ProfileProvider providerController;
-
   @override
   void initState() {
     super.initState();
-    providerController = Provider.of<ProfileProvider>(context, listen: false);
-    loadUserData();
-  }
-
-  Future<void> loadUserData() async {
-    await providerController.loadData();
-    providerController.setLoading(false);
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthService>(context);
-    final profileProvider = Provider.of<ProfileProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -54,9 +43,15 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     TextButton(
                       onPressed: () async {
-                        auth.signOut();
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: ((context) => Login())));
+                        FirebaseAuth auth = FirebaseAuth.instance;
+                        await auth.signOut().then((value) {
+                          {
+                            SessionController().userId = '';
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                    builder: (context) => Login()));
+                          }
+                        });
                       },
                       child: const Text('Logout'),
                     ),
@@ -74,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.white,
       ),
       body: Center(
-        child: Consumer<ProfileProvider>(
+        child: Consumer<ProfileController>(
           builder: (context, value, child) {
             if (value.isLoading) {
               return const CircularProgressIndicator();
@@ -102,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           const Icon(Icons.person, color: Colors.grey),
                           const SizedBox(width: 10),
                           Text(
-                            profileProvider.myuser.value.firstname ?? '',
+                            value.myuser.value.firstname ?? '',
                             style: const TextStyle(color: Colors.grey),
                           ),
                         ],
@@ -113,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           const Icon(Icons.home, color: Colors.grey),
                           const SizedBox(width: 10),
                           Text(
-                            profileProvider.myuser.value.address ?? '',
+                            value.myuser.value.address ?? '',
                             style: const TextStyle(color: Colors.grey),
                           ),
                         ],
@@ -124,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           const Icon(Icons.email, color: Colors.grey),
                           const SizedBox(width: 10),
                           Text(
-                            profileProvider.myuser.value.email ?? '',
+                            value.myuser.value.email ?? '',
                             style: const TextStyle(color: Colors.grey),
                           ),
                         ],

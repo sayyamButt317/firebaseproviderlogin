@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:login/Services/session_manger.dart';
+import 'package:login/View/home.dart';
 
 class SignupProvider extends ChangeNotifier {
-
-  final FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  DatabaseReference ref = FirebaseDatabase.instance.ref().child('users');
 
   bool _loading = false;
   bool get loading => _loading;
@@ -14,54 +16,50 @@ class SignupProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void signup(
-      String firstname, String lastname, String email, String password) async {
+  void signup(BuildContext context, String firstname, String lastname,
+      String email, String password) async {
     setLoading(true);
     try {
       auth
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((value) {
-                 ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('User Created Successfully'),
-          duration: Duration(seconds: 3),
-        ),
-        setLoading(false);
-      );
-          })
-          .onError((error, stackTrace) {
-            setLoading(false);
-                 ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred while signing up'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-          });
-    }catch (error) {
-      setLoading(false);
+        SessionController().userId = value.user!.uid.toString();
+        ref.child(value.user!.uid.toString()).set({
+          'uid': value.user!.uid.toString(),
+          'email': value.user!.email.toString(),
+          'firstname': firstname,
+          'lastname': lastname,
+        }).then((value) {
+          setLoading(false);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const MyHomePage()),
+          );
+        }).onError((error, stackTree) {
+          setLoading(false);
+        });
         ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+          SnackBar(
+            content: Text('User Created Successfully'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }).onError((error, stackTrace) {
+        setLoading(false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('An error occurred while signing up'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      });
+    } catch (error) {
+      setLoading(false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
           content: Text('An error occurred while signing up'),
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
         ),
       );
     }
   }
 }
-
-
-         ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred while signing up'),
-          duration: Duration(seconds: 3),
-        ),
-      );
-          Fluttertoast.showToast(
-        msg: "This is a Toast message",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );

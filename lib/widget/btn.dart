@@ -11,6 +11,7 @@ class AppButton extends StatelessWidget {
     this.style,
     required this.onPressed,
     this.width,
+    this.loading = false,
   });
 
   final GlobalKey<FormState>? formKey;
@@ -21,12 +22,13 @@ class AppButton extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
   final Color? style;
   final VoidCallback onPressed;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: MaterialButton(
-        onPressed: onPressed,
+        onPressed: loading ? null : onPressed,
         height: height ?? 50,
         minWidth: width,
         padding:
@@ -35,12 +37,16 @@ class AppButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         color: Colors.black,
-        child: Text(
+      
+        child:loading ? const Center(
+          child:CircularProgressIndicator(color:Colors.white,)):Center( 
+           child: Text(
           text ?? '',
           style: const TextStyle(
             color: Colors.white,
+
           ),
-        ),
+        ),)
       ),
     );
   }

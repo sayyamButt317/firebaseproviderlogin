@@ -1,19 +1,26 @@
 import 'dart:io';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:path/path.dart' as Path;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import '../Model/Info_model.dart';
+import '../Services/session_manger.dart';
+import '../widget/textfeild.dart';
 
-class ProfileProvider extends ChangeNotifier {
+class ProfileController extends ChangeNotifier {
   final myuser = ValueNotifier<InfoModel>(InfoModel(uid: ''));
 
-  final TextEditingController firstname = TextEditingController();
-  final TextEditingController lastname = TextEditingController();
-  final TextEditingController email = TextEditingController();
-  final TextEditingController address = TextEditingController();
+  DatabaseReference ref = FirebaseDatabase.instance.ref().child('users');
+  firebase_storage.FirebaseStorage storage =
+      firebase_storage.FirebaseStorage.instance;
+
+  final TextEditingController firstnamecontroller = TextEditingController();
+  final TextEditingController lastnamecontroller = TextEditingController();
+  final TextEditingController emailcontroller = TextEditingController();
+  final TextEditingController addresscontroller = TextEditingController();
 
   final FocusNode firstnameFocusNode = FocusNode();
   final FocusNode lastnameFocusNode = FocusNode();
@@ -21,7 +28,6 @@ class ProfileProvider extends ChangeNotifier {
   final FocusNode emailFocusNode = FocusNode();
 
   bool _isLoading = false;
-
   bool get isLoading => _isLoading;
 
   void setLoading(bool value) {
@@ -37,8 +43,10 @@ class ProfileProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  File? _selectedImage;
-  File? get selectedImage => _selectedImage;
+  final picker = ImagePicker();
+  XFile? _image;
+
+  XFile? get image => _image;
 
   set selectedImage(File? image) {
     if (image != null) {
@@ -47,20 +55,135 @@ class ProfileProvider extends ChangeNotifier {
     }
   }
 
-  void getImage(ImageSource source) async {
-    final ImagePicker imagepicker = ImagePicker();
-    final XFile? image = await imagepicker.pickImage(
-      maxWidth: 150,
-      maxHeight: 200,
-      source: source,
-    );
-    if (image != null) {
-      _selectedImage = File(image.path);
+  void pickImage(context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: SizedBox(
+              height: 120,
+              child: Column(children: [
+                ListTile(
+                  onTap: () {
+                    pickCameraImage(context);
+                    Navigator.pop(context);
+                  },
+                  leading: const Icon(Icons.camera, color: Colors.black),
+                  title: const Text('Camera'),
+                ),
+                ListTile(
+                  onTap: () {
+                    pickGalleryImage(context);
+                    Navigator.pop(context);
+                  },
+                  leading: const Icon(Icons.image, color: Colors.black),
+                  title: const Text('Gallery'),
+                ),
+              ]),
+            ),
+          );
+        });
+  }
+
+  Future pickGalleryImage(BuildContext context) async {
+    final pickedFile =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
+    if (pickedFile != null) {
+      _image = XFile(pickedFile.path);
+      uploadImage(context);
       notifyListeners();
     }
   }
 
-  Future<String> uploadImage(XFile? image) async {
+  Future pickCameraImage(BuildContext context) async {
+    final pickedFile =
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 100);
+    if (pickedFile != null) {
+      _image = XFile(pickedFile.path);
+      uploadImage(context);
+      notifyListeners();
+    }
+  }
+
+  void uploadImage(BuildContext context) async {
+    setLoading(true);
+    firebase_storage.Reference storageRef = firebase_storage
+        .FirebaseStorage.instance
+        .ref('/profileimage${SessionController().userId.toString()}');
+    firebase_storage.UploadTask uploadTask =
+        storageRef.putFile(File(image!.path).absolute);
+    await Future.value(uploadTask);
+    final newurl = await storageRef.getDownloadURL();
+    ref
+        .child(SessionController().userId.toString())
+        .update({'image': newurl.toString()}).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Image updated'),
+          duration: Duration(seconds: 3),
+        ),
+      );
+      setLoading(false);
+      _image = null;
+    }).onError((error, stackTrace) {
+      setLoading(false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.toString()),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    });
+  }
+
+  Future<void> showFirstNameDialogueAlert(BuildContext context, String name) {
+    firstnamecontroller.text = name;
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: const Center(child: Text('Username updated')),
+              content: SingleChildScrollView(
+                  child: Column(children: [
+                CustomTextFormField(
+                  focusNode: firstnameFocusNode,
+                  controller: firstnamecontroller,
+                  prefixIcon: Icons.person,
+                  hintText: 'Enter Your First Name',
+                  keyboardType: TextInputType.text,
+                )
+              ])),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel',
+                        style: TextStyle(color: Colors.red))),
+                TextButton(
+                    onPressed: () {
+                      ref.child(SessionController().userId.toString()).update(
+                          {'firstnamme': firstnamecontroller.text.toString()});
+                      Navigator.pop(context);
+                    },
+                    child: const Text('okay',
+                        style: TextStyle(color: Colors.black)))
+              ]);
+        });
+  }
+
+  /* Future updateinfo(){
+
+        ref.child(SessionController().userId.toString()).update(
+            {
+              firstnamme': firstnamecontroller.text.toString(),
+              'lastnamme': lastnamecontroller.text.toString(),
+              'address': addresscontroller.text.toString(),
+              'email': emailcontroller.text.toString()},
+          ); 
+  } */
+
+  /* Future<String> uploadImage(XFile? image) async {
     if (image == null) {
       return '';
     }
@@ -68,8 +191,9 @@ class ProfileProvider extends ChangeNotifier {
     String imageUrl = '';
     try {
       String fileName = Path.basename(image.path);
-      var reference =
-          FirebaseStorage.instance.ref().child('profileimage/$fileName');
+      var reference = FirebaseStorage.instance
+          .ref()
+          .child('profileimage/$fileName${SessionController().userId.toString()}');
       TaskSnapshot taskSnapshot = await reference.putFile(File(image.path));
       imageUrl = await taskSnapshot.ref.getDownloadURL();
       debugPrint("Download URL: $imageUrl");
@@ -77,35 +201,26 @@ class ProfileProvider extends ChangeNotifier {
       debugPrint("Image Upload Error: $error");
     }
     return imageUrl;
-  }
+  } */
 
-  Future<void> storeUserInfo() async {
+  Future storeUserInfo(BuildContext context) async {
     try {
-      String imageurl = '';
-      if (selectedImage != null) {
-        imageurl = await uploadImage(selectedImage! as XFile?);
-      }
       final uid = FirebaseAuth.instance.currentUser!.uid;
-      if (imageurl.isNotEmpty) {
-        await FirebaseFirestore.instance
-            .collection('profileimage')
-            .doc(uid)
-            .set({
-          'image': imageurl,
-        }, SetOptions(merge: true));
-      }
+      ref.child(SessionController().userId.toString());
+      String id = DateTime.now().millisecondsSinceEpoch.toString();
       await FirebaseFirestore.instance
           .collection('Information_Form')
-          .doc(uid)
-          .set({
-        'firstname': firstname.text,
-        'lastname': lastname.text,
-        'address': address.text,
-        'email': email.text,
-        'uid': uid,
-        'image': imageurl,
-      }, SetOptions(merge: true)).onError(
-              (e, _) => print("Error writing document: $e"));
+          .doc(id)
+          .update(
+        {
+          'firstname': firstnamecontroller.text,
+          'lastname': lastnamecontroller.text,
+          'address': addresscontroller.text,
+          'email': emailcontroller.text,
+          'uid': uid,
+          'image': _image,
+        },
+      ).onError((e, _) => print("Error writing document: $e"));
     } catch (error) {
       print('Error saving data: $error');
     }
@@ -113,6 +228,7 @@ class ProfileProvider extends ChangeNotifier {
 
   Future<void> loadData() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
+    ref.child(SessionController().userId.toString());
     FirebaseFirestore.instance
         .collection('Information_Form')
         .doc(uid)
@@ -120,10 +236,10 @@ class ProfileProvider extends ChangeNotifier {
         .listen((event) {
       myuser.value = InfoModel.fromJson(event.data() ?? {});
       selectedImage = (myuser.value.image ?? '') as File?;
-      firstname.text = myuser.value.firstname ?? '';
-      lastname.text = myuser.value.lastname ?? '';
-      address.text = myuser.value.address ?? '';
-      email.text = myuser.value.email ?? '';
+      firstnamecontroller.text = myuser.value.firstname ?? '';
+      lastnamecontroller.text = myuser.value.lastname ?? '';
+      addresscontroller.text = myuser.value.address ?? '';
+      emailcontroller.text = myuser.value.email ?? '';
     });
   }
   // Future<void> loadData() async {

@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login/Services/session_manger.dart';
+import 'package:login/View/login_view.dart';
 
-import '../View/home.dart';
-import '../View/login_view.dart';
 import '../Model/user_model.dart';
-import '../View/profile.dart';
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -19,37 +18,6 @@ class AuthService extends ChangeNotifier {
 
   Stream<UserModel?> get user {
     return _auth.authStateChanges().map((user) => _userFromFirebase(user));
-  }
-
-  Future<void> login(
-      BuildContext context, String email, String password) async {
-    try {
-      final UserCredential userCredential =
-          await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      final User? user = userCredential.user;
-      if (user != null) {
-        // Check if the user has entered profile data
-        final hasEnteredProfileData = await checkProfileData(user.uid);
-        if (hasEnteredProfileData) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const MyHomePage()),
-          );
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const Profile()),
-          );
-        }
-      }
-    } on FirebaseAuthException catch (e) {
-      // Handle FirebaseAuthExceptions
-    } catch (error) {
-      // Handle other errors
-    }
   }
 
   Future<bool> checkProfileData(String uid) async {
@@ -67,7 +35,11 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<void> signOut() async {
-    await _auth.signOut();
+  void signOut(BuildContext context) async {
+    await _auth.signOut().then((value) {
+      SessionController().userId = '';
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => Login()));
+    });
   }
 }

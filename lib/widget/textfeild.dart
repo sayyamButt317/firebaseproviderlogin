@@ -24,10 +24,12 @@ class CustomTextFormField extends StatelessWidget {
     this.textColor,
     this.onChanged,
     this.focusNode,
+    this.value,
   });
 
   final TextEditingController? controller;
-  final String? Function(String?)? validator;
+  final FormFieldValidator? validator;
+
   final String? Function(dynamic value)? onChanged;
   final FocusNode? focusNode;
   final TextInputType? keyboardType;
@@ -47,6 +49,7 @@ class CustomTextFormField extends StatelessWidget {
   final bool? showCursor;
   final bool? obscureText;
   final Color? textColor;
+  final String? value;
 
   @override
   Widget build(BuildContext context) {
