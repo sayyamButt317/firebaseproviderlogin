@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../View/home.dart';
 import '../widget/routes_name.dart';
 
 class SplashProvider extends ChangeNotifier {

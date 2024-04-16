@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login/Services/session_manger.dart';
-import 'package:login/View/login_view.dart';
 
 import '../Model/user_model.dart';
 import '../widget/routes_name.dart';

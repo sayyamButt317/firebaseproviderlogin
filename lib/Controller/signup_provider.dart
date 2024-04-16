@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:login/Services/session_manger.dart';
-import 'package:login/View/home.dart';
 
 import '../widget/routes_name.dart';
 

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:login/Controller/profile_provider.dart';
 import 'package:login/Services/session_manger.dart';
 import 'package:login/View/login_view.dart';
-import 'package:login/View/profile.dart';
 import 'package:provider/provider.dart';
 
 import '../widget/routes_name.dart';
@@ -19,6 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    Provider.of<ProfileController>(context, listen: false).loadData();
   }
 
   @override

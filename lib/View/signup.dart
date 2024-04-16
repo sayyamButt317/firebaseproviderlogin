@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:login/Controller/signup_provider.dart';
-import 'package:login/View/login_view.dart';
 import 'package:login/widget/btn.dart';
 import 'package:login/widget/textfeild.dart';
 import 'package:provider/provider.dart';
