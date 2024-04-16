@@ -20,25 +20,4 @@ class AuthService extends ChangeNotifier {
     return _auth.authStateChanges().map((user) => _userFromFirebase(user));
   }
 
-  Future<bool> checkProfileData(String uid) async {
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('Information_Form')
-          .doc(uid)
-          .get();
-      final data = snapshot.data();
-      // Check if profile data exists
-      return data != null;
-    } catch (error) {
-      print(error);
-      return false;
-    }
-  }
-
-  void signOut(BuildContext context) async {
-    await _auth.signOut().then((value) {
-      SessionController().userId = '';
-      Navigator.pushNamed(context,RouteName.loginscreen);
-    });
-  }
 }
