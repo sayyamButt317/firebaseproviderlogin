@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:login/Services/check_login.dart';
 import 'package:login/Services/session_manger.dart';
 import 'package:login/View/login_view.dart';
 import 'package:login/View/profile.dart';
+
+import '../widget/routes_name.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -19,26 +20,17 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Timer(
       const Duration(seconds: 3),
-      () {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => checklogin()),
-        );
-      },
-    );
+      () => checklogin());
   }
 
-  checklogin() {
+  void checklogin() {
     FirebaseAuth auth = FirebaseAuth.instance;
     final user = auth.currentUser;
     if (user != null) {
       SessionController().userId = user.uid.toString();
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const Profile()),
-      );
+      Navigator.pushNamed(context,RouteName.profilescreen);
     } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => Login()),
-      );
+      Navigator.pushNamed(context,RouteName.loginscreen);
     }
   }
 

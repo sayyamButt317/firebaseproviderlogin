@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:login/Services/session_manger.dart';
 import 'package:login/View/home.dart';
 
+import '../widget/routes_name.dart';
+
 class LoginController with ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -22,9 +24,7 @@ class LoginController with ChangeNotifier {
           .then((value) {
         SessionController().userId = value.user!.uid.toString();
         setLoading(false);
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const MyHomePage()),
-        );
+        Navigator.pushNamed(context,RouteName.profilescreen);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('User Created Successfully'),

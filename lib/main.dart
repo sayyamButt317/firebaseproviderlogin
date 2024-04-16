@@ -1,11 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:login/Controller/profile_provider.dart';
 import 'package:login/Services/auth.dart';
 import 'package:login/Controller/signup_provider.dart';
 import 'package:login/Controller/splash_controller.dart';
-import 'package:login/Controller/profile_provider.dart';
 import 'package:login/View/profile.dart';
+import 'package:login/widget/routes_name.dart';
 import 'package:provider/provider.dart';
+import 'Controller/login_controller.dart';
+import 'Routes/routes.dart';
 import 'View/home.dart';
 import 'View/login_view.dart';
 import 'View/signup.dart';
@@ -21,9 +24,11 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
-        ChangeNotifierProvider(create: (_) => ProfileProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileController()),
         ChangeNotifierProvider(create: (_) => SplashProvider()),
         ChangeNotifierProvider(create: (_) => SignupProvider()),
+        ChangeNotifierProvider(create: (_) => LoginController()),
+
       ],
       child: const MyApp(),
     ),
@@ -41,14 +46,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const SplashScreen(),
-        '/login': (context) => Login(),
-        '/signup': (context) => Signup(),
-        '/Profile': (context) => const Profile(),
-        '/Home': (context) => const MyHomePage(),
-      },
+      onGenerateRoute: Routes.generateRoute,
+      initialRoute: RouteName.splashscreen,
     );
   }
 }

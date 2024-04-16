@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:login/Controller/profile_provider.dart';
 import 'package:login/Services/session_manger.dart';
 import 'package:login/View/login_view.dart';
 import 'package:login/View/profile.dart';
 import 'package:provider/provider.dart';
+
+import '../widget/routes_name.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -87,10 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       GestureDetector(
-                          onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const Profile())),
+                          onTap: () =>  Navigator.pushNamed(context,RouteName.profilescreen),
                           child: const Icon(Icons.edit)),
                       Row(
                         children: [

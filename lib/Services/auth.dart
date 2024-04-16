@@ -5,6 +5,7 @@ import 'package:login/Services/session_manger.dart';
 import 'package:login/View/login_view.dart';
 
 import '../Model/user_model.dart';
+import '../widget/routes_name.dart';
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -38,8 +39,7 @@ class AuthService extends ChangeNotifier {
   void signOut(BuildContext context) async {
     await _auth.signOut().then((value) {
       SessionController().userId = '';
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => Login()));
+      Navigator.pushNamed(context,RouteName.loginscreen);
     });
   }
 }

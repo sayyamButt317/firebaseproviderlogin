@@ -5,12 +5,15 @@ import 'package:login/widget/btn.dart';
 import 'package:login/widget/textfeild.dart';
 import 'package:provider/provider.dart';
 
+import '../widget/routes_name.dart';
+
 class Signup extends StatelessWidget {
   Signup({super.key});
 
   final _formKey = GlobalKey<FormState>();
   final TextEditingController firstnameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController lastnameController = TextEditingController();
 
@@ -40,32 +43,12 @@ class Signup extends StatelessWidget {
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Form(
                       key: _formKey,
                       child: Column(
                         children: [
-                          CustomTextFormField(
-                            controller: firstnameController,
-                            prefixIcon: Icons.alternate_email,
-                            validator: (value) => value!.isEmpty
-                                ? 'Please enter First Name'
-                                : null,
-                            keyboardType: TextInputType.emailAddress,
-                            hintText: 'FirstName',
-                          ),
-                          const SizedBox(height: 15),
-                          CustomTextFormField(
-                            controller: lastnameController,
-                            prefixIcon: Icons.alternate_email,
-                            validator: (value) => value!.isEmpty
-                                ? 'Please enter your Last Name'
-                                : null,
-                            keyboardType: TextInputType.emailAddress,
-                            hintText: 'LastName',
-                          ),
+
                           const SizedBox(height: 15),
                           CustomTextFormField(
                             controller: emailController,
@@ -93,20 +76,21 @@ class Signup extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        AppButton(
-                          text: ("Sign Up"),
-                          loading: provider.loading,
-                          width: MediaQuery.sizeOf(context).width * 0.8,
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              provider.signup(
+                        Center(
+                          child: AppButton(
+                            text: ("Sign Up"),
+                            loading: provider.loading,
+                            width: MediaQuery.sizeOf(context).width * 0.89,
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                provider.signup(
                                   context,
-                                  firstnameController.text,
-                                  lastnameController.text,
                                   emailController.text,
-                                  passwordController.text);
-                            }
-                          },
+                                  passwordController.text,
+                                );
+                              }
+                            },
+                          ),
                         ),
                       ],
                     ),
@@ -117,16 +101,14 @@ class Signup extends StatelessWidget {
                         const Text("Already have an Account ?"),
                         InkWell(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Login()),
-                            );
+                            Navigator.pushNamed(context,RouteName.loginscreen);
                           },
                           child: const Text(
                             " Login",
                             style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.w600),
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ],
