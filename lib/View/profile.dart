@@ -14,18 +14,17 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-
-   User? user = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.instance.currentUser;
   CollectionReference usersCollection =
       FirebaseFirestore.instance.collection('Information_Form');
 
-       @override
-       void initState() {
-        super.initState();
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-           Provider.of<ProfileController>(context, listen: false).loadData();
-        });
-      }
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      Provider.of<ProfileController>(context, listen: false).loadData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,42 +84,32 @@ class _ProfileState extends State<Profile> {
                                                   BorderRadius.circular(100),
                                               child: provider.image == null
                                                   ? const Icon(
-                                                          Icons.person_outline)
-                                                      : Image(
-                                                          fit: BoxFit.cover,
-                                                          image: NetworkImage(
-                                                              streamSnapshot.data!['image'],),
-                                                          loadingBuilder: (context,
-                                                              child,
-                                                              loadingProgress) {
-                                                            if (loadingProgress ==
-                                                                null) {
-                                                              return child;
-                                                            }
-                                                            return const Center(
-                                                                child:
-                                                                    CircularProgressIndicator());
-                                                          },
-                                                          errorBuilder:
-                                                              (context, object,
-                                                                  stck) {
-                                                            return const Icon(
-                                                              Icons
-                                                                  .error_outline,
-                                                              color: Colors.red,
-                                                            );
-                                                          },
-                                                        )
-                                                      
-                                                  : Stack(
-                                                      children: [
-                                                        Image.file(File(provider
-                                                                .image!.path)
-                                                            .absolute),
-                                                        const Center(
-                                                            child:
-                                                                CircularProgressIndicator()),
-                                                      ],
+                                                      Icons.person_outline)
+                                                  : Image(
+                                                      fit: BoxFit.cover,
+                                                      image: NetworkImage(
+                                                        streamSnapshot
+                                                            .data!['image'],
+                                                      ),
+                                                      loadingBuilder: (context,
+                                                          child,
+                                                          loadingProgress) {
+                                                        if (loadingProgress ==
+                                                            null) {
+                                                          return child;
+                                                        }
+                                                        return const Center(
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        );
+                                                      },
+                                                      errorBuilder: (context,
+                                                          object, stck) {
+                                                        return const Icon(
+                                                          Icons.error_outline,
+                                                          color: Colors.red,
+                                                        );
+                                                      },
                                                     ),
                                             ),
                                           ),
