@@ -4,15 +4,10 @@ import 'package:login/Controller/profile_provider.dart';
 import 'package:login/Services/auth.dart';
 import 'package:login/Controller/signup_provider.dart';
 import 'package:login/Controller/splash_controller.dart';
-import 'package:login/View/profile.dart';
 import 'package:login/widget/routes_name.dart';
 import 'package:provider/provider.dart';
 import 'Controller/login_controller.dart';
 import 'Routes/routes.dart';
-import 'View/home.dart';
-import 'View/login_view.dart';
-import 'View/signup.dart';
-import 'View/splash.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -28,7 +23,6 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => SplashProvider()),
         ChangeNotifierProvider(create: (_) => SignupProvider()),
         ChangeNotifierProvider(create: (_) => LoginController()),
-
       ],
       child: const MyApp(),
     ),

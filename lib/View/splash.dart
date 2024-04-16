@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:login/Services/check_login.dart';
 import 'package:login/Services/session_manger.dart';
 import 'package:login/View/login_view.dart';
 import 'package:login/View/profile.dart';
@@ -18,20 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(
-      const Duration(seconds: 3),
-      () => checklogin());
-  }
-
-  void checklogin() {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    final user = auth.currentUser;
-    if (user != null) {
-      SessionController().userId = user.uid.toString();
-      Navigator.pushNamed(context,RouteName.profilescreen);
-    } else {
-      Navigator.pushNamed(context,RouteName.loginscreen);
-    }
+    Timer(const Duration(seconds: 3), () => LoginStatus());
   }
 
   @override

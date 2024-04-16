@@ -1,13 +1,10 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:login/Services/session_manger.dart';
 import 'package:provider/provider.dart';
 import '../Controller/profile_provider.dart';
 import '../widget/btn.dart';
-import '../widget/routes_name.dart';
 import '../widget/textfeild.dart';
-import 'home.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -17,19 +14,22 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final ref = FirebaseFirestore.instance.collection('Information_Form');
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    Provider.of<ProfileController>(context, listen: false).loadData();
-  }
+   User? user = FirebaseAuth.instance.currentUser;
+  CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('Information_Form');
+
+       @override
+       void initState() {
+        super.initState();
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+           Provider.of<ProfileController>(context, listen: false).loadData();
+        });
+      }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Detail'),
@@ -43,29 +43,17 @@ class _ProfileState extends State<Profile> {
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: StreamBuilder(
-                  stream: ref
-                      .doc(SessionController().userId.toString())
-                      .snapshots(),
-                  builder: (context,
-                      AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                      snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else if (!snapshot.hasData ||
-                        snapshot.data == null ||
-                        !snapshot.data!.exists) {
-                      return const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text('No data available'),
-                        ],
-                      );
-                    } else {
-                      Map<String, dynamic> map = snapshot.data!.data()!;
+                child: StreamBuilder<DocumentSnapshot>(
+                    stream: usersCollection.doc(user!.uid).snapshots(),
+                    builder: (ctx, streamSnapshot) {
+                      if (streamSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.blue,
+                          ),
+                        );
+                      }
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -94,48 +82,46 @@ class _ProfileState extends State<Profile> {
                                             ),
                                             child: ClipRRect(
                                               borderRadius:
-                                              BorderRadius.circular(100),
+                                                  BorderRadius.circular(100),
                                               child: provider.image == null
-                                                  ? map['image'].toString() ==
-                                                  ""
                                                   ? const Icon(
-                                                  Icons.person_outline)
-                                                  : Image(
-                                                fit: BoxFit.cover,
-                                                image: NetworkImage(
-                                                    map['image']
-                                                        .toString()),
-                                                loadingBuilder: (context,
-                                                    child,
-                                                    loadingProgress) {
-                                                  if (loadingProgress ==
-                                                      null) {
-                                                    return child;
-                                                  }
-                                                  return const Center(
-                                                      child:
-                                                      CircularProgressIndicator());
-                                                },
-                                                errorBuilder:
-                                                    (context, object,
-                                                    stck) {
-                                                  return const Icon(
-                                                    Icons
-                                                        .error_outline,
-                                                    color: Colors.red,
-                                                  );
-                                                },
-                                              )
+                                                          Icons.person_outline)
+                                                      : Image(
+                                                          fit: BoxFit.cover,
+                                                          image: NetworkImage(
+                                                              streamSnapshot.data!['image'],),
+                                                          loadingBuilder: (context,
+                                                              child,
+                                                              loadingProgress) {
+                                                            if (loadingProgress ==
+                                                                null) {
+                                                              return child;
+                                                            }
+                                                            return const Center(
+                                                                child:
+                                                                    CircularProgressIndicator());
+                                                          },
+                                                          errorBuilder:
+                                                              (context, object,
+                                                                  stck) {
+                                                            return const Icon(
+                                                              Icons
+                                                                  .error_outline,
+                                                              color: Colors.red,
+                                                            );
+                                                          },
+                                                        )
+                                                      
                                                   : Stack(
-                                                children: [
-                                                  Image.file(File(provider
-                                                      .image!.path)
-                                                      .absolute),
-                                                  const Center(
-                                                      child:
-                                                      CircularProgressIndicator()),
-                                                ],
-                                              ),
+                                                      children: [
+                                                        Image.file(File(provider
+                                                                .image!.path)
+                                                            .absolute),
+                                                        const Center(
+                                                            child:
+                                                                CircularProgressIndicator()),
+                                                      ],
+                                                    ),
                                             ),
                                           ),
                                         ),
@@ -155,7 +141,7 @@ class _ProfileState extends State<Profile> {
                                   ),
                                   const SizedBox(height: 20),
                                   CustomTextFormField(
-                                    value: map['firstname'],
+                                    value: value.myuser.value.firstname,
                                     focusNode: value.firstnameFocusNode,
                                     controller: value.firstnamecontroller,
                                     prefixIcon: Icons.person,
@@ -168,7 +154,7 @@ class _ProfileState extends State<Profile> {
                                   ),
                                   const SizedBox(height: 15),
                                   CustomTextFormField(
-                                    value: map['lastname'],
+                                    value: value.myuser.value.lastname,
                                     focusNode: value.lastnameFocusNode,
                                     controller: value.lastnamecontroller,
                                     prefixIcon: Icons.person_outline,
@@ -181,6 +167,7 @@ class _ProfileState extends State<Profile> {
                                   ),
                                   const SizedBox(height: 15),
                                   CustomTextFormField(
+                                    value: value.myuser.value.address,
                                     focusNode: value.addressFocusNode,
                                     controller: value.addresscontroller,
                                     prefixIcon: Icons.home,
@@ -193,6 +180,7 @@ class _ProfileState extends State<Profile> {
                                   ),
                                   const SizedBox(height: 15),
                                   CustomTextFormField(
+                                    value: value.myuser.value.email,
                                     controller: value.emailcontroller,
                                     prefixIcon: Icons.alternate_email,
                                     hintText: 'Enter Your Email',
@@ -205,13 +193,13 @@ class _ProfileState extends State<Profile> {
                                   const SizedBox(height: 20),
                                   Row(
                                     mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
                                       if (!value.isEditing)
                                         AppButton(
                                           width: MediaQuery.of(context)
-                                              .size
-                                              .width *
+                                                  .size
+                                                  .width *
                                               0.6,
                                           text: 'Edit',
                                           onPressed: () async {
@@ -223,8 +211,8 @@ class _ProfileState extends State<Profile> {
                                       if (value.isEditing)
                                         AppButton(
                                           width: MediaQuery.of(context)
-                                              .size
-                                              .width *
+                                                  .size
+                                                  .width *
                                               0.6,
                                           text: 'Save',
                                           onPressed: () async {
@@ -240,9 +228,7 @@ class _ProfileState extends State<Profile> {
                           ),
                         ],
                       );
-                    }
-                  },
-                ),
+                    }),
               ),
             ),
           );
@@ -251,4 +237,3 @@ class _ProfileState extends State<Profile> {
     );
   }
 }
-

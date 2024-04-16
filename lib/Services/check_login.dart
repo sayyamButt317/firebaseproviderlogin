@@ -1,23 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:login/View/login_view.dart';
-import 'package:login/View/profile.dart';
-
-import 'session_manger.dart';
+import 'package:login/widget/routes_name.dart';
 
 class LoginStatus {
-  dynamic checklogin(BuildContext context) {
-    FirebaseAuth auth = FirebaseAuth.instance;
-    final user = auth.currentUser;
+  checklogin(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      SessionController().userId = user.uid.toString();
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const Profile()),
-      );
-    } else {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => Login()),
-      );
+      FirebaseFirestore.instance
+          .collection('Information_Form')
+          .doc(user.uid)
+          .get()
+          .then((value) {
+        if (value.exists) {
+          Navigator.pushNamed(context, RouteName.homescreen);
+        } else {
+          Navigator.pushNamed(context, RouteName.loginscreen);
+        }
+      });
     }
   }
 }

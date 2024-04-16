@@ -1,5 +1,4 @@
 class InfoModel {
-  final String uid;
   final String? firstname;
   final String? lastname;
   final String? email;
@@ -7,7 +6,6 @@ class InfoModel {
   final String? address;
 
   InfoModel({
-    required this.uid,
     this.firstname,
     this.lastname,
     this.email,
@@ -17,7 +15,6 @@ class InfoModel {
 
   factory InfoModel.fromJson(Map<String, dynamic> json) {
     return InfoModel(
-      uid: json['uid'] ?? '',
       firstname: json['firstname'],
       lastname: json['lastname'],
       email: json['email'],
