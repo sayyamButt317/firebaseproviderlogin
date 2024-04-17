@@ -1,16 +1,16 @@
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:login/Model/user_data.dart';
 import 'package:path/path.dart' as Path;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
-import '../Model/Info_model.dart';
 import '../widget/routes_name.dart';
 
 class ProfileController extends ChangeNotifier {
-  ValueNotifier<InfoModel> myuser = ValueNotifier<InfoModel>(InfoModel());
+  ValueNotifier<UserData> myuser = ValueNotifier<UserData>(UserData());
 
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
@@ -116,12 +116,11 @@ class ProfileController extends ChangeNotifier {
         print("image url :$value");
       },
     );
-
+    notifyListeners();
     return imageUrl;
   }
 
   Future<void> storeUserInfo(BuildContext context) async {
-    setLoading(true);
     String url = await uploadImage(_selectedImage!);
     final uid = FirebaseAuth.instance.currentUser!.uid;
     FirebaseFirestore.instance.collection('Information_Form').doc(uid).set(
@@ -132,6 +131,7 @@ class ProfileController extends ChangeNotifier {
         'email': emailcontroller.text,
         'image': url,
       },
+      SetOptions(merge: true),
     ).then((value) {
       firstnamecontroller.clear();
       lastnamecontroller.clear();
@@ -149,7 +149,8 @@ class ProfileController extends ChangeNotifier {
         .doc(uid)
         .snapshots()
         .listen((event) {
-      myuser.value = InfoModel.fromJson(event.data()!);
+      myuser.value = UserData.fromJson(event.data()!);
+      notifyListeners();
     });
   }
 }

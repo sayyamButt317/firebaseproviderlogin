@@ -1,11 +1,11 @@
-class InfoModel {
+class UserData {
   final String? firstname;
   final String? lastname;
   final String? email;
   final String? image;
   final String? address;
 
-  InfoModel({
+  UserData({
     this.firstname,
     this.lastname,
     this.email,
@@ -13,8 +13,8 @@ class InfoModel {
     this.address,
   });
 
-  factory InfoModel.fromJson(Map<String, dynamic> json) {
-    return InfoModel(
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
       firstname: json['firstname'],
       lastname: json['lastname'],
       email: json['email'],

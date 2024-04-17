@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:login/Controller/profile_provider.dart';
 import 'package:login/Services/auth.dart';
 import 'package:login/Controller/signup_provider.dart';
-import 'package:login/Controller/splash_controller.dart';
 import 'package:login/widget/routes_name.dart';
 import 'package:provider/provider.dart';
 import 'Controller/login_controller.dart';

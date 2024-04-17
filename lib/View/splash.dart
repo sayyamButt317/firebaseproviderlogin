@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../Controller/splash_controller.dart';
-import 'login_view.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -11,12 +10,12 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  SplashService splashscreen = SplashService();
 
-  SplashService splashscreen =SplashService();
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () =>splashscreen.isLogin(context));
+    Timer(const Duration(seconds: 3), () => splashscreen.checklogin(context));
   }
 
   @override

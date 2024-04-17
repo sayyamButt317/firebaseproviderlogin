@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:login/Controller/login_controller.dart';
+import 'package:login/Services/auth.dart';
 import 'package:provider/provider.dart';
 import '../widget/btn.dart';
 import '../widget/routes_name.dart';
@@ -59,8 +59,8 @@ class Login extends StatelessWidget {
                 Row(
                   children: [
                     ChangeNotifierProvider(
-                      create: (_) => LoginController(),
-                      child: Consumer<LoginController>(
+                      create: (_) => AuthService(),
+                      child: Consumer<AuthService>(
                         builder: (context, provider, child) {
                           return Center(
                             child: AppButton(
@@ -71,8 +71,8 @@ class Login extends StatelessWidget {
                                 if (_formKey.currentState!.validate()) {
                                   provider.login(
                                     context,
-                                    emailController.text,
-                                    passwordController.text,
+                                    emailController.text.toString(),
+                                    passwordController.text.toString(),
                                   );
                                 }
                               },

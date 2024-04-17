@@ -28,26 +28,28 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: MaterialButton(
-        onPressed: loading ? null : onPressed,
-        height: height ?? 50,
-        minWidth: width,
-        padding:
-            padding ?? const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        color: Colors.black,
-      
-        child:loading ? const Center(
-          child:CircularProgressIndicator(color:Colors.white,)):Center( 
-           child: Text(
-          text ?? '',
-          style: const TextStyle(
-            color: Colors.white,
-
+          onPressed: loading ? null : onPressed,
+          height: height ?? 50,
+          minWidth: width,
+          padding: padding ??
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
-        ),)
-      ),
+          color: Colors.black,
+          child: loading
+              ? const Center(
+                  child: CircularProgressIndicator(
+                  color: Colors.white,
+                ))
+              : Center(
+                  child: Text(
+                    text ?? '',
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                )),
     );
   }
 }

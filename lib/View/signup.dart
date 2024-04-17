@@ -47,7 +47,6 @@ class Signup extends StatelessWidget {
                       key: _formKey,
                       child: Column(
                         children: [
-
                           const SizedBox(height: 15),
                           CustomTextFormField(
                             controller: emailController,
@@ -100,7 +99,7 @@ class Signup extends StatelessWidget {
                         const Text("Already have an Account ?"),
                         InkWell(
                           onTap: () {
-                            Navigator.pushNamed(context,RouteName.loginscreen);
+                            Navigator.pushNamed(context, RouteName.loginscreen);
                           },
                           child: const Text(
                             " Login",
