@@ -89,7 +89,6 @@ class ProfileController extends ChangeNotifier {
         await _picker.pickImage(source: ImageSource.gallery, imageQuality: 100);
     if (pickedFile != null) {
       _selectedImage = File(pickedFile.path);
-      uploadImage(image!);
       notifyListeners();
     }
   }
@@ -99,7 +98,6 @@ class ProfileController extends ChangeNotifier {
         await _picker.pickImage(source: ImageSource.camera, imageQuality: 100);
     if (pickedFile != null) {
       _selectedImage = File(pickedFile.path);
-      uploadImage(image!);
       notifyListeners();
     }
   }
@@ -122,7 +120,9 @@ class ProfileController extends ChangeNotifier {
   }
 
   Future<void> storeUserInfo(BuildContext context) async {
-    String url = await uploadImage(_selectedImage!);
+    setLoading(true);
+    String imageUrl = await uploadImage(_selectedImage!);
+
     final uid = FirebaseAuth.instance.currentUser!.uid;
     FirebaseFirestore.instance.collection('Information_Form').doc(uid).set(
       {
@@ -130,7 +130,7 @@ class ProfileController extends ChangeNotifier {
         'lastname': lastnamecontroller.text,
         'address': addresscontroller.text,
         'email': emailcontroller.text,
-        'image': url,
+        'image': imageUrl,
       },
       SetOptions(merge: true),
     ).then((value) {
@@ -140,6 +140,9 @@ class ProfileController extends ChangeNotifier {
       emailcontroller.clear();
       setLoading(false);
       Navigator.pushNamed(context, RouteName.homescreen);
+    }).catchError((error) {
+      setLoading(false);
+      print("Failed to store user info: $error");
     });
   }
 

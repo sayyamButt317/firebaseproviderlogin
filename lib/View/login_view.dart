@@ -6,7 +6,7 @@ import '../widget/routes_name.dart';
 import '../widget/textfeild.dart';
 
 class Login extends StatelessWidget {
-  Login({super.key});
+  Login({Key? key}) : super(key: key);
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -58,28 +58,44 @@ class Login extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    ChangeNotifierProvider(
-                      create: (_) => AuthService(),
-                      child: Consumer<AuthService>(
-                        builder: (context, provider, child) {
-                          return Center(
-                            child: AppButton(
-                              text: ("Login"),
-                              loading: provider.loading,
-                              width: MediaQuery.sizeOf(context).width * 0.87,
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  provider.login(
-                                    context,
-                                    emailController.text.trim(),
-                                    passwordController.text.trim(),
-                                  );
+                    Consumer<AuthService>(
+                      builder: (context, provider, child) {
+                        return Center(
+                          child: AppButton(
+                            text: ("Login"),
+                            loading: provider.loading,
+                            width: MediaQuery.of(context).size.width * 0.87,
+                            onPressed: () async {
+                              var form = _formKey.currentState;
+                              if (form!.validate()) {
+                                provider.setLoading(
+                                    true); // Set loading to true before login
+                                String email = emailController.text.trim();
+                                String password =
+                                    passwordController.text.trim();
+
+                                try {
+                                  await provider
+                                      .login(context, email, password)
+                                      .then((result) {
+                                    if (result != null) {
+                                      provider.setLoading(
+                                          false); // Set loading to false after successful login
+                                    } else {
+                                      provider.setLoading(
+                                          false); // Set loading to false if login fails
+                                    }
+                                  });
+                                } catch (error) {
+                                  print('Error: $error');
+                                  provider.setLoading(
+                                      false); // Set loading to false in case of error
                                 }
-                              },
-                            ),
-                          );
-                        },
-                      ),
+                              }
+                            },
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

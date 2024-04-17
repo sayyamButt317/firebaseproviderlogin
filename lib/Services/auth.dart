@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:login/widget/routes_name.dart';
 
 import '../Model/user_model.dart';
 
