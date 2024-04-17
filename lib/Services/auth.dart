@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../Model/user_model.dart';
+import '../View/home.dart';
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -32,6 +32,13 @@ class AuthService extends ChangeNotifier {
       );
       User? user = result.user;
       setLoading(false);
+      if (user != null) {
+        // Navigate to Home Screen on successful login
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MyHomePage()),
+        );
+      }
       return _userFromFirebaseUser(user);
     } catch (err) {
       setLoading(false);
