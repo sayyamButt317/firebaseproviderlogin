@@ -14,39 +14,40 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
+//create user object based on firebase user
   UserModel? _userFromFirebaseUser(User? user) {
-    return user != null ? UserModel(user.uid, user.email) : null;
+    return user != null
+        ? UserModel(
+            user.uid,
+            user.email,
+          )
+        : null;
   }
 
+  //auth change user stream
   Stream<UserModel?> get user {
     return _auth.authStateChanges().map(_userFromFirebaseUser);
   }
 
-  Future<UserModel?> login(
-      BuildContext context, String email, String password) async {
+  Future login(BuildContext context, String email, String password) async {
     try {
-      setLoading(true);
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      User? user = result.user;
-      setLoading(false);
-      return _userFromFirebaseUser(user);
-    } catch (err) {
-      setLoading(false);
-      if (err is FirebaseAuthException) {
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((result) {
+        User? user = result.user;
+        return _userFromFirebaseUser(user);
+      }).catchError((err) {
         if (err.code == 'user-not-found') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('No user found'),
+              content: Text('Internal error something went wrong'),
               duration: Duration(seconds: 3),
             ),
           );
         } else if (err.code == 'wrong-password') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Wrong password'),
+              content: Text('Internal error something went wrong'),
               duration: Duration(seconds: 3),
             ),
           );
@@ -58,10 +59,9 @@ class AuthService extends ChangeNotifier {
             ),
           );
         }
-      } else {
-        print('Error: $err');
-      }
-
+      });
+    } catch (e) {
+      print(e.toString());
       return null;
     }
   }
