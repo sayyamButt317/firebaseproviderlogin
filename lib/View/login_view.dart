@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:login/Controller/login_controller.dart';
 import 'package:login/Services/auth.dart';
 import 'package:provider/provider.dart';
 import '../widget/btn.dart';
@@ -59,20 +60,20 @@ class Login extends StatelessWidget {
                 Row(
                   children: [
                     ChangeNotifierProvider(
-                      create: (_) => AuthService(),
-                      child: Consumer<AuthService>(
+                      create: (_) => LoginController(),
+                      child: Consumer<LoginController>(
                         builder: (context, provider, child) {
                           return Center(
                             child: AppButton(
                               text: ("Login"),
                               loading: provider.loading,
-                              width: MediaQuery.sizeOf(context).width * 0.89,
+                              width: MediaQuery.sizeOf(context).width * 0.87,
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   provider.login(
                                     context,
-                                    emailController.text.toString(),
-                                    passwordController.text.toString(),
+                                    emailController.text.trim(),
+                                    passwordController.text.trim(),
                                   );
                                 }
                               },

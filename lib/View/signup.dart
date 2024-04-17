@@ -78,7 +78,7 @@ class Signup extends StatelessWidget {
                           child: AppButton(
                             text: ("Sign Up"),
                             loading: provider.loading,
-                            width: MediaQuery.sizeOf(context).width * 0.89,
+                            width: MediaQuery.sizeOf(context).width * 0.87,
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
                                 provider.signup(

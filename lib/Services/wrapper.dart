@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:login/Model/user_model.dart';
 import 'package:login/View/home.dart';
 import 'package:login/View/login_view.dart';
+import 'package:login/View/profile.dart';
 import 'package:provider/provider.dart';
 
 class Wrapper extends StatelessWidget {

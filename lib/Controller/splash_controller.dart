@@ -22,13 +22,13 @@ class SplashService {
     }
   }
 
-  void isLogin(BuildContext context) {
-    final auth = FirebaseAuth.instance;
-    final user = auth.currentUser;
-    if (user != null) {
-      Navigator.pushNamed(context, RouteName.homescreen);
-    } else {
-      Navigator.pushNamed(context, RouteName.profilescreen);
-    }
-  }
+  // void isLogin(BuildContext context) {
+  //   final auth = FirebaseAuth.instance;
+  //   final user = auth.currentUser;
+  //   if (user != null) {
+  //     Navigator.pushNamed(context, RouteName.homescreen);
+  //   } else {
+  //     Navigator.pushNamed(context, RouteName.profilescreen);
+  //   }
+  // }
 }
