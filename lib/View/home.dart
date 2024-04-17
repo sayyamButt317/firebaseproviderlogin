@@ -24,7 +24,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         leading: IconButton(
           onPressed: () async {
             showDialog(

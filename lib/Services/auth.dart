@@ -23,62 +23,47 @@ class AuthService extends ChangeNotifier {
     return _auth.authStateChanges().map(_userFromFirebaseUser);
   }
 
-  Future<void> login(
+  Future<UserModel?> login(
       BuildContext context, String email, String password) async {
     try {
-      await _auth
-          .signInWithEmailAndPassword(
+      setLoading(true);
+      UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
-      )
-          .then((result) {
-        User? user = result.user;
-        return _userFromFirebaseUser(user);
-      });
-      Navigator.pushNamed(context, RouteName.profilescreen);
-    } catch (error) {
-      print(error);
+      );
+      User? user = result.user;
+      setLoading(false);
+      return _userFromFirebaseUser(user);
+    } catch (err) {
+      setLoading(false);
+      if (err is FirebaseAuthException) {
+        if (err.code == 'user-not-found') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('No user found'),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        } else if (err.code == 'wrong-password') {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Wrong password'),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Internal error something went wrong'),
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      } else {
+        print('Error: $err');
+      }
+
+      return null;
     }
   }
-
-  // Future login(
-  //   BuildContext context,
-  //   email,
-  //   String password,
-  // ) async {
-  //   try {
-  //     await _auth
-  //         .signInWithEmailAndPassword(email: email, password: password)
-  //         .then((result) {
-  //       User? user = result.user;
-  //       return _userFromFirebaseUser(user);
-  //     }).catchError((err) {
-  //       if (err.code == 'user-not-found') {
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(
-  //             content: Text('No user found'),
-  //             duration: Duration(seconds: 3),
-  //           ),
-  //         );
-  //       } else if (err.code == 'wrong-password') {
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(
-  //             content: Text('Wrong password'),
-  //             duration: Duration(seconds: 3),
-  //           ),
-  //         );
-  //       } else {
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           const SnackBar(
-  //             content: Text('Internal error something went wrong'),
-  //             duration: Duration(seconds: 3),
-  //           ),
-  //         );
-  //       }
-  //     });
-  //   } catch (e) {
-  //     print(e.toString());
-  //     return null;
-  //   }
-  // }
 }

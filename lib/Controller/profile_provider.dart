@@ -26,6 +26,7 @@ class ProfileController extends ChangeNotifier {
   final FocusNode emailFocusNode = FocusNode();
 
   bool _isLoading = false;
+
   bool get isLoading => _isLoading;
 
   void setLoading(bool value) {
