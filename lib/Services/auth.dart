@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../Model/user_model.dart';
+import '../View/home.dart';
 
 class AuthService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -31,12 +31,17 @@ class AuthService extends ChangeNotifier {
 
   Future login(BuildContext context, String email, String password) async {
     try {
-      await _auth
-          .signInWithEmailAndPassword(email: email, password: password)
-          .then((result) {
-        User? user = result.user;
-        return _userFromFirebaseUser(user);
-      }).catchError((err) {
+      setLoading(true);
+      UserCredential result = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      User? user = result.user;
+      setLoading(false);
+      return _userFromFirebaseUser(user);
+    } catch (err) {
+      setLoading(false);
+      if (err is FirebaseAuthException) {
         if (err.code == 'user-not-found') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

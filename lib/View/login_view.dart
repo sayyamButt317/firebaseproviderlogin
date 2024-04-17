@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:login/Services/auth.dart';
 import 'package:provider/provider.dart';
-import '../widget/btn.dart';
+import '../widget/btn.dart';  // Replace with your custom button widget
 import '../widget/routes_name.dart';
-import '../widget/textfeild.dart';
+import '../widget/textfeild.dart';  // Replace with your custom text field widget
 
 class Login extends StatelessWidget {
   Login({Key? key}) : super(key: key);
@@ -39,7 +39,7 @@ class Login extends StatelessWidget {
                       controller: emailController,
                       prefixIcon: Icons.alternate_email,
                       validator: (value) =>
-                          value!.isEmpty ? 'Please enter your Email' : null,
+                      value!.isEmpty ? 'Please enter your Email' : null,
                       keyboardType: TextInputType.emailAddress,
                       hintText: 'Enter your Email',
                     ),
@@ -49,7 +49,7 @@ class Login extends StatelessWidget {
                       prefixIcon: Icons.lock,
                       obscureText: true,
                       validator: (value) =>
-                          value!.isEmpty ? 'Please enter your password' : null,
+                      value!.isEmpty ? 'Please enter your password' : null,
                       keyboardType: TextInputType.text,
                       hintText: 'Enter your Password',
                     ),
@@ -65,34 +65,30 @@ class Login extends StatelessWidget {
                             text: ("Login"),
                             loading: provider.loading,
                             width: MediaQuery.of(context).size.width * 0.87,
-                            onPressed: () async {
-                              var form = _formKey.currentState;
-                              if (form!.validate()) {
-                                provider.setLoading(
-                                    true); // Set loading to true before login
-                                String email = emailController.text.trim();
-                                String password =
-                                    passwordController.text.trim();
+                              onPressed: () async {
+                                var form = _formKey.currentState;
+                                if (form!.validate()) {
+                                  provider.setLoading(true);
+                                  String email = emailController.text.trim();
+                                  String password = passwordController.text.trim();
 
-                                try {
-                                  await provider
-                                      .login(context, email, password)
-                                      .then((result) {
-                                    if (result != null) {
-                                      provider.setLoading(
-                                          false); // Set loading to false after successful login
-                                    } else {
-                                      provider.setLoading(
-                                          false); // Set loading to false if login fails
-                                    }
-                                  });
-                                } catch (error) {
-                                  print('Error: $error');
-                                  provider.setLoading(
-                                      false); // Set loading to false in case of error
+                                  try {
+                                    await provider.login(context, email, password);
+                                  } catch (error) {
+                                    print('Error: $error');
+                                    provider.setLoading(false);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('Login failed. Please try again.'),
+                                        duration: Duration(seconds: 3),
+                                      ),
+                                    );
+                                  } finally {
+                                    provider.setLoading(false);
+                                  }
                                 }
                               }
-                            },
+
                           ),
                         );
                       },
