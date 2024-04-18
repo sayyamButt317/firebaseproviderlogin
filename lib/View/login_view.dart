@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:login/Services/auth.dart';
 import 'package:provider/provider.dart';
-import '../widget/btn.dart';  // Replace with your custom button widget
+import '../widget/btn.dart';
 import '../widget/routes_name.dart';
-import '../widget/textfeild.dart';  // Replace with your custom text field widget
+import '../widget/textfeild.dart';
 
 class Login extends StatelessWidget {
   Login({Key? key}) : super(key: key);
