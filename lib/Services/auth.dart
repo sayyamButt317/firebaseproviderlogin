@@ -40,14 +40,14 @@ class AuthService extends ChangeNotifier {
         if (err.code == 'user-not-found') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Internal error something went wrong'),
+              content: Text('user-not-found'),
               duration: Duration(seconds: 3),
             ),
           );
         } else if (err.code == 'wrong-password') {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Internal error something went wrong'),
+              content: Text('wrong-password'),
               duration: Duration(seconds: 3),
             ),
           );
