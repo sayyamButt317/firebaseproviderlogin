@@ -72,8 +72,13 @@ class Login extends StatelessWidget {
                                   String email = emailController.text.trim();
                                   String password = passwordController.text.trim();
 
+                                  // if(provider.signin(email, password)){
+                                  //   Navigator.pushNamed(context, RouteName.profilescreen);
+                                  // }else{
+                                  //   debugPrint('this is failed:');
+                                  // }
                                   try {
-                                    await provider.login(context, email, password);
+                                    await provider.signin(context, email, password);
                                   } catch (error) {
                                     print('Error: $error');
                                     provider.setLoading(false);

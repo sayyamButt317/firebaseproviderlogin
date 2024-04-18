@@ -25,5 +25,6 @@ class LoginController with ChangeNotifier {
     } catch (error) {
       print(error);
     }
+    notifyListeners();
   }
 }
