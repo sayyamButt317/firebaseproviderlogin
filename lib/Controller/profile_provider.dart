@@ -95,7 +95,7 @@ class ProfileController extends ChangeNotifier {
 
   Future pickCameraImage(BuildContext context) async {
     final pickedFile =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 100);
+        await _picker.pickImage(source: ImageSource.camera);
     if (pickedFile != null) {
       _selectedImage = File(pickedFile.path);
       notifyListeners();
